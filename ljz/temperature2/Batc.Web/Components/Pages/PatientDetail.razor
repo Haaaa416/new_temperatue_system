@@ -20,7 +20,8 @@
             <div class="detail-header">
                 <img src="@patient.AvatarUrl" alt="avatar" />
                 <div>
-                    <div class="Name">Name : @patient.Name</div>
+                    <!-- 這裡把 Name 改成小寫 name，才會吃到 CSS -->
+                    <div class="name">Name : @patient.Name</div>
                     <div class="pid">ID ： @patient.Id</div>
                 </div>
             </div>
@@ -32,15 +33,17 @@
                 <div><label>Blood Type</label><span>@patient.BloodType</span></div>
                 <div><label>Height(cm)</label><span>@patient.Height</span></div>
                 <div><label>Weight(kg)</label><span>@patient.Weight</span></div>
-
             </div>
 
             <div class="detail-actions">
                 <button class="back" @onclick="GoBack">返回清單</button>
+                <!-- 新增：Confirm 按鈕 -->
+                <button class="confirm" @onclick="GoConfirm">Confirm</button>
             </div>
         </div>
     }
 </div>
+
 @code {
     [Parameter] public string? Id { get; set; }
     private Patient? patient;
@@ -51,6 +54,14 @@
     }
 
     private void GoBack() => Nav.NavigateTo("/patients");
+
+    // 新增：導向 /confirm/{id}
+    private void GoConfirm()
+    {
+        // 若你想導去固定頁就用 Nav.NavigateTo("/confirm")
+        Nav.NavigateTo($"/confirm/{Id}");
+    }
+
     private static string FormatDate(DateTime? dt) =>
         dt.HasValue ? dt.Value.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture) : "-";
 }
