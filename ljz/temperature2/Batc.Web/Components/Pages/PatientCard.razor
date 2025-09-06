@@ -1,0 +1,16 @@
+@using Batc.Web.Models
+
+@code {
+    [Parameter] public Patient Patient { get; set; } = default!;
+    private string DetailUrl => $"/patient/{Uri.EscapeDataString(Patient.Id)}";
+}
+
+<a class="patient-card" href="@DetailUrl" title="檢視明細">
+    <img src="@Patient.AvatarUrl" alt="avatar" />
+    <div class="info">
+        <div class="name">@Patient.Name</div>
+        <div class="id">ID：@Patient.Id</div>
+        @* 想在卡片顯示生日可打開這行 *@
+        @* <div class="dob">DOB：@Patient.DateOfBirth?.ToString("yyyy/MM/dd")</div> *@
+    </div>
+</a>

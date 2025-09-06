@@ -1,0 +1,56 @@
+.patient-card[b-yk5k7l8w4s] {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: box-shadow .15s ease, transform .05s ease;
+    width: 100%; /* �T�O�d���񺡮e�� */
+    max-width: 350px; /* ����̤j�e�� */
+    min-width: 250px; /* �]�w�̤p�e�� */
+    box-sizing: border-box;
+    text-decoration: none; /* ��ӥd������ܩ��u */
+    color: inherit; /* �ϥέ쥻��r�C�� */
+}
+
+.patient-card:hover[b-yk5k7l8w4s] {
+    box-shadow: 0 6px 16px rgba(0,0,0,.06);
+    transform: translateY(-1px);
+}
+
+.patient-card img[b-yk5k7l8w4s] {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0; /* �����Y���Q���Y */
+}
+
+.patient-card .info[b-yk5k7l8w4s] {
+    flex: 1;
+    min-width: 0; /* ���\��r�Q�I�_ */
+}
+
+.patient-card .name[b-yk5k7l8w4s] {
+    font-weight: 600;
+    color: #111827;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* �W�r�Ӫ������... */
+    text-decoration: none;
+}
+
+.patient-card .id[b-yk5k7l8w4s] {
+    font-size: 12px;
+    color: #9ca3af;
+    text-decoration: none;
+}
+
+.patient-card .dob[b-yk5k7l8w4s] {
+    font-size: 12px;
+    color: #9ca3af;
+    text-decoration: none;
+}

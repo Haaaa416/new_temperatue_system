@@ -1,0 +1,629 @@
+/* _content/Batc.Web/Components/Layout/MainLayout.razor.rz.scp.css */
+:root[b-7i2sy2985x], html[b-7i2sy2985x], body[b-7i2sy2985x] {
+    height: 100%;
+}
+
+body[b-7i2sy2985x] {
+    margin: 0;
+}
+
+.page-root[b-7i2sy2985x] {
+    height: 100vh;
+}
+/* _content/Batc.Web/Components/Pages/Home.razor.rz.scp.css */
+/* 版面 */
+.login-container[b-x59tbheumx] {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* 左側漸層（約 58% 寬），LOGO 置中 */
+.left-section[b-x59tbheumx] {
+    flex: 0 0 50%;
+    background: linear-gradient(135deg,#B9E2FA 0%,#CBEAFB 40%,#BEEFF0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ✅ 直向堆疊＋置中，避免文字跑到右邊 */
+.logo-stack[b-x59tbheumx] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /* 視覺微調：整組往左一點點，遠離中線 */
+    margin-right: 6vw;
+    /* 如果你之前有寫 transform: translate(...)，請移除 */
+}
+
+.logo-image[b-x59tbheumx] {
+    width: 140px;
+    height: auto;
+    display: block;
+}
+
+.logo-text[b-x59tbheumx] {
+    margin-top: 14px;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #111;
+}
+
+@media (max-width: 1200px) {
+    .logo-stack[b-x59tbheumx] {
+        margin-right: 0;
+    }
+}
+
+/* 右側灰底，卡片置中 */
+.right-section[b-x59tbheumx] {
+    flex: 1;
+    background: #f6f6f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 登入卡片（半透明白 + 玻璃霧面） */
+.form-card[b-x59tbheumx] {
+    width: 560px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.12);
+}
+
+    .form-card h2[b-x59tbheumx] {
+        margin: 0 0 24px;
+        font-size: 32px;
+        font-weight: 800;
+        text-align: center;
+        color: #111;
+    }
+
+    .form-card label[b-x59tbheumx] {
+        display: block;
+        margin: 12px 0 6px;
+        color: #444;
+        font-size: 14px;
+    }
+
+    .form-card input[b-x59tbheumx],
+    .form-card select[b-x59tbheumx] {
+        width: 100%;
+        height: 56px;
+        padding: 0 14px;
+        font-size: 18px;
+        border: 1px solid #d6d6d6;
+        border-radius: 8px;
+        outline: none;
+        background: #fff;
+    }
+
+    .form-card button[b-x59tbheumx] {
+        width: 100%;
+        height: 56px;
+        margin-top: 16px;
+        border: 0;
+        border-radius: 12px;
+        background: #90CAF9;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .form-card p[b-x59tbheumx] {
+        margin-top: 14px;
+        text-align: center;
+        color: #9aa0a6;
+    }
+
+    .form-card a[b-x59tbheumx] {
+        color: #1a73e8;
+        font-weight: 700;
+        text-decoration: none;
+    }
+/* _content/Batc.Web/Components/Pages/PatientCard.razor.rz.scp.css */
+.patient-card[b-yk5k7l8w4s] {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: box-shadow .15s ease, transform .05s ease;
+    width: 100%; /* �T�O�d���񺡮e�� */
+    max-width: 350px; /* ����̤j�e�� */
+    min-width: 250px; /* �]�w�̤p�e�� */
+    box-sizing: border-box;
+    text-decoration: none; /* ��ӥd������ܩ��u */
+    color: inherit; /* �ϥέ쥻��r�C�� */
+}
+
+.patient-card:hover[b-yk5k7l8w4s] {
+    box-shadow: 0 6px 16px rgba(0,0,0,.06);
+    transform: translateY(-1px);
+}
+
+.patient-card img[b-yk5k7l8w4s] {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0; /* �����Y���Q���Y */
+}
+
+.patient-card .info[b-yk5k7l8w4s] {
+    flex: 1;
+    min-width: 0; /* ���\��r�Q�I�_ */
+}
+
+.patient-card .name[b-yk5k7l8w4s] {
+    font-weight: 600;
+    color: #111827;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* �W�r�Ӫ������... */
+    text-decoration: none;
+}
+
+.patient-card .id[b-yk5k7l8w4s] {
+    font-size: 12px;
+    color: #9ca3af;
+    text-decoration: none;
+}
+
+.patient-card .dob[b-yk5k7l8w4s] {
+    font-size: 12px;
+    color: #9ca3af;
+    text-decoration: none;
+}
+/* _content/Batc.Web/Components/Pages/PatientDetail.razor.rz.scp.css */
+/* �J���G.detail-wrap �������m���F�ɤW�����m���P�������� */
+.detail-wrap[b-ooivdabmy6] {
+    padding: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* �s�W�G�����m�� */
+    min-height: 100vh; /* �s�W�G������������ */
+}
+
+/* �H�U���A�즳�˦��A�O�d�Y�i�]�K�W����H�K�л\�ɤ@�P�^ */
+.not-found[b-ooivdabmy6] {
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    padding: 16px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.detail-card[b-ooivdabmy6] {
+    width: 720px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.06);
+    padding: 20px;
+}
+
+.detail-header[b-ooivdabmy6] {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    border-bottom: 1px solid #f0f2f5;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+}
+
+.detail-header img[b-ooivdabmy6] {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.detail-header .name[b-ooivdabmy6] {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.detail-header .pid[b-ooivdabmy6] {
+    color: #9aa3ae;
+    font-size: 12px;
+}
+
+.detail-grid[b-ooivdabmy6] {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.detail-grid label[b-ooivdabmy6] {
+    display: block;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.detail-grid span[b-ooivdabmy6] {
+    display: block;
+    font-weight: 600;
+    color: #111827;
+}
+
+.detail-actions[b-ooivdabmy6] {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.detail-actions .back[b-ooivdabmy6] {
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    cursor: pointer;
+}
+
+.detail-actions .back:hover[b-ooivdabmy6] {
+    background: #f9fafb;
+}
+/* _content/Batc.Web/Components/Pages/Patients.razor.rz.scp.css */
+.patients-page[b-vwt9m0s8cw] {
+    display: flex;
+    gap: 32px;
+    padding: 24px 28px;
+}
+
+.topbar[b-vwt9m0s8cw] {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 60px 8px 40px;
+    min-width: 100%;
+    border-bottom: 3px solid #e1e5e9; /* �[�ʮؽu�A�q 1px �אּ 3px */
+    background: #fff;
+    justify-content: space-between; /* �����k�ⰼ���} */
+}
+
+ .topbar .brand[b-vwt9m0s8cw] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.topbar .brand img[b-vwt9m0s8cw] {
+    width: 30px;
+    height: 30px;
+}
+
+.topbar .spacer[b-vwt9m0s8cw] {
+flex: 1;
+}
+
+.user-section[b-vwt9m0s8cw] {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.icon-btn[b-vwt9m0s8cw] {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: opacity 0.2s;
+    outline: none; /* �����I���ɪ��J�I�� */
+}
+
+.icon-btn:hover[b-vwt9m0s8cw] {
+    opacity: 0.7; /* hover �ɵy�L�ܳz���A�Ӥ��O�[�I���� */
+}
+
+.icon-btn:focus[b-vwt9m0s8cw] {
+    outline: none; /* �T�O�J�I�ɤ]�S���خ� */
+}
+
+.icon-btn img[b-vwt9m0s8cw] {
+    display: block;
+    object-fit: contain;
+}
+
+.user-info[b-vwt9m0s8cw] {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-avatar[b-vwt9m0s8cw] {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-name[b-vwt9m0s8cw] {
+    font-weight: 500;
+    color: #374151;
+}
+
+.logout-btn[b-vwt9m0s8cw] {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.logout-btn:hover[b-vwt9m0s8cw] {
+    background: #2563eb;
+}
+
+/* ���G�M�� */
+.patients-list[b-vwt9m0s8cw] {
+    flex: 0 0 50%;
+    max-width: 50%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.patient-card[b-vwt9m0s8cw] {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px; /* ��֤��Z */
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: box-shadow .15s ease, transform .05s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.patient-card:hover[b-vwt9m0s8cw] {
+    box-shadow: 0 6px 16px rgba(0,0,0,.06);
+    transform: translateY(-1px);
+}
+
+.patient-card img[b-vwt9m0s8cw] {
+    width: 48px; /* �y�L�Y�p�Y�� */
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.patient-card .info[b-vwt9m0s8cw] {
+    flex: 1;
+    min-width: 0;
+}
+
+.patient-card .name[b-vwt9m0s8cw] {
+    font-weight: 600;
+    color: #111827;
+    font-size: 14px; /* �y�L�Y�p�r�� */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.patient-card .id[b-vwt9m0s8cw] {
+    font-size: 11px; /* �Y�p ID �r�� */
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+.patient-card .dob[b-vwt9m0s8cw] {
+    font-size: 11px; /* �Y�p DOB �r�� */
+    color: #9ca3af;
+}
+.empty-hint[b-vwt9m0s8cw] {
+    color: #8a8f98;
+    padding: 14px;
+    border: 1px dashed #d8dde6;
+    border-radius: 10px;
+    background: #fafbfd;
+}
+
+/* �k�G����d�� */
+.add-panel[b-vwt9m0s8cw] {
+    flex: 1;
+}
+
+
+.panel-title[b-vwt9m0s8cw] {
+    width: 280px;
+    margin: 0 0 16px 0;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    border: 1px solid #e1e5ea;
+    border-radius: 20px;
+    font-weight: 600;
+    background: #fff;
+}
+
+.form-card[b-vwt9m0s8cw] {
+    padding: 24px;
+    border: 1px solid #e1e5ea;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(0,0,0,.04);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ����C */
+.form-row[b-vwt9m0s8cw] {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 12px 0;
+    justify-content: flex-start; /* �T�O����� */
+}
+
+.form-row label[b-vwt9m0s8cw] {
+    width: 120px;
+    color: #4b5563;
+    text-align: left; /* �T�O���ҥ���� */
+    flex-shrink: 0; /* ������ҳQ���Y */
+}
+
+.form-row input[b-vwt9m0s8cw],
+.form-row select[b-vwt9m0s8cw] {
+    flex: 1;
+    height: 42px;
+    border: 1px solid #d6dbe3;
+    border-radius: 8px;
+    padding: 0 10px;
+    font-size: 15px;
+    outline: none;
+    background: #fff;
+    min-width: 0; /* ���\��J���Y�p */
+}
+
+.actions[b-vwt9m0s8cw] {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.btn-add[b-vwt9m0s8cw] {
+    width: 160px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid #22c55e;
+    color: #0f5132;
+    background: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-add:hover[b-vwt9m0s8cw] {
+    background: #ecfdf5;
+}
+/* _content/Batc.Web/Components/Pages/Register.razor.rz.scp.css */
+.register-page[b-kngxsgil6a] {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f6f6f6;
+    padding: 24px;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.panel-title[b-kngxsgil6a] {
+    display: inline-block;
+    padding: 10px 18px;
+    border: 1px solid #d1d5db;
+    border-radius: 14px;
+    background: #fff;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 16px;
+}
+
+.form-card[b-kngxsgil6a] {
+    width: 680px;
+    max-width: 92vw;
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.04);
+}
+
+.form-row[b-kngxsgil6a] {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 14px 0;
+}
+
+    .form-row label[b-kngxsgil6a] {
+        width: 80px;
+        color: #4b5563;
+        text-align: left;
+        flex-shrink: 0;
+    }
+
+    .form-row input[b-kngxsgil6a],
+    .form-row select[b-kngxsgil6a] {
+        flex: 1;
+        height: 44px;
+        border: 1px solid #d6dbe3;
+        border-radius: 8px;
+        padding: 0 10px;
+        font-size: 16px;
+        outline: none;
+        background: #fff;
+    }
+
+.actions[b-kngxsgil6a] {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.btn-add[b-kngxsgil6a] {
+    width: 160px;
+    height: 40px;
+    border-radius: 10px;
+    border: 2px solid #22c55e;
+    background: #fff;
+    color: #111;
+    font-weight: 700;
+    letter-spacing: .5px;
+    cursor: pointer;
+}
+
+    .btn-add:hover[b-kngxsgil6a] {
+        background: #ecfdf5;
+    }
+
+.btn-secondary[b-kngxsgil6a] {
+    width: 160px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #374151;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    .btn-secondary:hover[b-kngxsgil6a] {
+        background: #f9fafb;
+    }
+
+@media (max-width: 520px) {
+    .form-row[b-kngxsgil6a] {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+        .form-row label[b-kngxsgil6a] {
+            width: auto;
+        }
+}

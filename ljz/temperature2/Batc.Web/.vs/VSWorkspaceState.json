@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Components",
+    "\\Components\\Pages",
+    "\\Models",
+    "\\Services",
+    "\\wwwroot",
+    "\\wwwroot\\images"
+  ],
+  "SelectedNode": "\\Components\\Pages\\Register.razor.css",
+  "PreviewInSolutionExplorer": false
+}

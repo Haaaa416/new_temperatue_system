@@ -1,0 +1,107 @@
+.register-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f6f6f6;
+    padding: 24px;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.panel-title {
+    display: inline-block;
+    padding: 10px 18px;
+    border: 1px solid #d1d5db;
+    border-radius: 14px;
+    background: #fff;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 16px;
+}
+
+.form-card {
+    width: 680px;
+    max-width: 92vw;
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.04);
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 14px 0;
+}
+
+    .form-row label {
+        width: 80px;
+        color: #4b5563;
+        text-align: left;
+        flex-shrink: 0;
+    }
+
+    .form-row input,
+    .form-row select {
+        flex: 1;
+        height: 44px;
+        border: 1px solid #d6dbe3;
+        border-radius: 8px;
+        padding: 0 10px;
+        font-size: 16px;
+        outline: none;
+        background: #fff;
+    }
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.btn-add {
+    width: 160px;
+    height: 40px;
+    border-radius: 10px;
+    border: 2px solid #22c55e;
+    background: #fff;
+    color: #111;
+    font-weight: 700;
+    letter-spacing: .5px;
+    cursor: pointer;
+}
+
+    .btn-add:hover {
+        background: #ecfdf5;
+    }
+
+.btn-secondary {
+    width: 160px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #374151;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    .btn-secondary:hover {
+        background: #f9fafb;
+    }
+
+@media (max-width: 520px) {
+    .form-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+        .form-row label {
+            width: auto;
+        }
+}

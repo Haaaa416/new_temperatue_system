@@ -1,0 +1,40 @@
+﻿@page "/"
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+<div class="login-container">
+    <div class="left-section">
+      <div class="logo-stack">
+        <img src="images/logo.png" alt="BATC Logo" class="logo-image" />
+        <div class="logo-text">BATC</div>
+      </div>
+    </div>
+
+    <div class="right-section">
+        <div class="form-card">
+            <h2>Sign In</h2>
+            <label>ID</label>
+            <input placeholder="Enter your ID" />
+
+            <label>Role</label>
+            <select>
+                <option>Doctor</option>
+                <option>Nurse</option>
+                <option>Admin</option>
+            </select>
+
+            <!-- ✅ 這裡綁定 @onclick -->
+            <button @onclick="GoPatients" style="pointer-events: auto; z-index: 999;">Sign In</button>
+
+            <p>Don't have an account? <NavLink href="/register">Register here</NavLink>
+        @* 或用 a：<a href="/register">Register here</a> *@</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private void GoPatients()
+    {
+        Console.WriteLine("Sign In button clicked!");
+        Nav.NavigateTo("/patients");
+    }
+}

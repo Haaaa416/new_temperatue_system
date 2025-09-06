@@ -1,0 +1,91 @@
+/* 既有：.detail-wrap 有水平置中；補上垂直置中與視窗高度 */
+.detail-wrap {
+    padding: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* 新增：垂直置中 */
+    min-height: 100vh; /* 新增：撐滿視窗高度 */
+}
+
+/* 以下為你原有樣式，保留即可（貼上完整以便覆蓋時一致） */
+.not-found {
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    padding: 16px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.detail-card {
+    width: 720px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.06);
+    padding: 20px;
+}
+
+.detail-header {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    border-bottom: 1px solid #f0f2f5;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+}
+
+.detail-header img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.detail-header .name {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.detail-header .pid {
+    color: #9aa3ae;
+    font-size: 12px;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.detail-grid label {
+    display: block;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.detail-grid span {
+    display: block;
+    font-weight: 600;
+    color: #111827;
+}
+
+.detail-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.detail-actions .back {
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    cursor: pointer;
+}
+
+.detail-actions .back:hover {
+    background: #f9fafb;
+}

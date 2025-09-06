@@ -1,0 +1,118 @@
+﻿/* 版面 */
+.login-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* 左側漸層（約 58% 寬），LOGO 置中 */
+.left-section {
+    flex: 0 0 50%;
+    background: linear-gradient(135deg,#B9E2FA 0%,#CBEAFB 40%,#BEEFF0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ✅ 直向堆疊＋置中，避免文字跑到右邊 */
+.logo-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /* 視覺微調：整組往左一點點，遠離中線 */
+    margin-right: 6vw;
+    /* 如果你之前有寫 transform: translate(...)，請移除 */
+}
+
+.logo-image {
+    width: 140px;
+    height: auto;
+    display: block;
+}
+
+.logo-text {
+    margin-top: 14px;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #111;
+}
+
+@media (max-width: 1200px) {
+    .logo-stack {
+        margin-right: 0;
+    }
+}
+
+/* 右側灰底，卡片置中 */
+.right-section {
+    flex: 1;
+    background: #f6f6f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 登入卡片（半透明白 + 玻璃霧面） */
+.form-card {
+    width: 560px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.12);
+}
+
+    .form-card h2 {
+        margin: 0 0 24px;
+        font-size: 32px;
+        font-weight: 800;
+        text-align: center;
+        color: #111;
+    }
+
+    .form-card label {
+        display: block;
+        margin: 12px 0 6px;
+        color: #444;
+        font-size: 14px;
+    }
+
+    .form-card input,
+    .form-card select {
+        width: 100%;
+        height: 56px;
+        padding: 0 14px;
+        font-size: 18px;
+        border: 1px solid #d6d6d6;
+        border-radius: 8px;
+        outline: none;
+        background: #fff;
+    }
+
+    .form-card button {
+        width: 100%;
+        height: 56px;
+        margin-top: 16px;
+        border: 0;
+        border-radius: 12px;
+        background: #90CAF9;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .form-card p {
+        margin-top: 14px;
+        text-align: center;
+        color: #9aa0a6;
+    }
+
+    .form-card a {
+        color: #1a73e8;
+        font-weight: 700;
+        text-decoration: none;
+    }

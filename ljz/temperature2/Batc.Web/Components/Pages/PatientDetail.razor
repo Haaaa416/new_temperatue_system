@@ -1,0 +1,56 @@
+@page "/patient/{id}"
+
+@using System.Globalization
+@using Batc.Web.Models
+@inject NavigationManager Nav
+@inject Batc.Web.Services.AppState AppState
+@rendermode InteractiveServer
+
+<div class="detail-wrap">
+    @if (patient is null)
+    {
+        <div class="not-found">
+            找不到這位病人。
+            <button class="back" @onclick="GoBack">返回清單</button>
+        </div>
+    }
+    else
+    {
+        <div class="detail-card">
+            <div class="detail-header">
+                <img src="@patient.AvatarUrl" alt="avatar" />
+                <div>
+                    <div class="Name">Name : @patient.Name</div>
+                    <div class="pid">ID ： @patient.Id</div>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <div><label>Date of Birth</label><span>@FormatDate(patient.DateOfBirth)</span></div>
+                <div><label>Age</label><span>@patient.Age</span></div>
+                <div><label>Gender</label><span>@patient.Gender</span></div>
+                <div><label>Blood Type</label><span>@patient.BloodType</span></div>
+                <div><label>Height(cm)</label><span>@patient.Height</span></div>
+                <div><label>Weight(kg)</label><span>@patient.Weight</span></div>
+
+            </div>
+
+            <div class="detail-actions">
+                <button class="back" @onclick="GoBack">返回清單</button>
+            </div>
+        </div>
+    }
+</div>
+@code {
+    [Parameter] public string? Id { get; set; }
+    private Patient? patient;
+
+    protected override void OnParametersSet()
+    {
+        patient = AppState.Patients?.FirstOrDefault(p => p.Id == Id);
+    }
+
+    private void GoBack() => Nav.NavigateTo("/patients");
+    private static string FormatDate(DateTime? dt) =>
+        dt.HasValue ? dt.Value.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture) : "-";
+}
