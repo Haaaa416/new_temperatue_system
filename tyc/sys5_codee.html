@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BATC • Pain Alarm Console (Mock)</title>
+  <style>
+    :root {
+      --bg:#f6f7fb;
+      --panel:#ffffff;
+      --stroke:#e5e7eb;
+      --text:#111827;
+      --muted:#6b7280;
+      --primary:#2f6bed;
+      --primary-600:#1f54d6;
+      --ok:#20b44b;
+      --ok-600:#15903a;
+      --danger:#ef4444;
+      --shadow:0 6px 22px rgba(17,24,39,.06);
+      --radius:18px;
+    }
+
+    * {
+      box-sizing:border-box;
+    }
+
+    html, body {
+      height:100%;
+    }
+
+    body {
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:14px/1.4 "Inter", ui-sans-serif;
+    }
+
+    /* ===== Topbar ===== */
+    .topbar {
+      position:sticky;
+      top:0;
+      z-index:50;
+      height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 20px;
+      background:#fff;
+      border-bottom:1px solid var(--stroke);
+    }
+
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+    }
+
+    .logo {
+      width:30px;
+      height:30px;
+      object-fit:contain;
+    }
+
+    .back {
+      margin-left:8px;
+      width:25px;
+      height:25px;
+      border:none;            /* 去掉黑框 */
+      background:none;        /* 去掉白底 */
+      padding:0;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      transition:transform .1s;
+    }
+
+    .back:hover {
+      transform:scale(1.05);  /* 滑過去放大一點 */
+    }
+
+    .back:active {
+      transform:scale(.95);   /* 點擊縮小 */
+    }
+
+    .back-icon {
+      width:100%;
+      height:100%;
+      object-fit:contain;     /* 圖片剛好填滿按鈕區域 */
+    }
+
+    .actions {
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-left:auto;
+    }
+
+    .settings-btn {
+      width:30px;
+      height:30px;
+      border:none;          /* 移除黑框 */
+      background:none;      /* 移除白底 */
+      padding:0;
+      box-shadow:none;      /* 移除陰影 */
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      transition:transform .1s;
+    }
+
+    .settings-btn:hover {
+      transform:scale(1.05);
+    }
+
+    .settings-btn:active {
+      transform:scale(.95);
+    }
+
+    .notify-btn {
+      width:30px;
+      height:30px;
+      border:none;
+      background:none;
+      padding:0;
+      box-shadow:none;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      transition:transform .1s;
+    }
+
+    .notify-btn:hover {
+      transform:scale(1.05);
+    }
+
+    .notify-btn:active {
+      transform:scale(.95);
+    }
+
+    .icon-full {
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
+
+    .icon-full {
+      width:100%;
+      height:100%;
+      object-fit:contain;   /* 圖片撐滿按鈕 */
+    }
+
+
+    .avatar {
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .avatar .pic {
+      width:36px;
+      height:36px;
+      border-radius:999px;
+      background:#fde68a;
+      display:grid;
+      place-items:center;
+      font-weight:700;
+    }
+
+    .avatar-img {
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      object-fit:cover;   /* 自動裁切填滿 */
+    }
+
+    .logout {
+      padding:10px 18px;
+      border-radius:12px;
+      background:var(--primary);
+      color:#fff;
+      font-weight:600;
+      border:none;
+      cursor:pointer;
+      transition:background .2s, transform .1s;
+    }
+
+    .logout:hover {
+      background:var(--primary-600);
+    }
+
+    .logout:active {
+      transform:scale(.97);
+    }
+
+    /* ===== Layout ===== */
+    .layout {
+      display:grid;
+      grid-template-columns:320px 1fr;
+      gap:18px;
+      padding:18px;
+      max-width:1280px;
+      margin:0 auto;
+    }
+
+    .panel {
+      background:var(--panel);
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    /* ===== Sidebar ===== */
+    .sidebar {
+      padding:16px;
+    }
+
+    .patient {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-bottom:16px;
+    }
+
+    .patient .badge {
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .model-grid {
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:10px;
+      margin:8px 0 12px;
+    }
+
+    .model-btn {
+      height:34px;
+      border-radius:8px;
+      border:1px solid #cbd5e1;
+      background:#f8fafc;
+      cursor:pointer;
+      font-weight:600;
+      transition:background .2s, transform .1s;
+    }
+
+    .model-btn:hover {
+      background:#e2e8f0;
+    }
+
+    .model-btn:active {
+      transform:scale(.96);
+    }
+
+    .model-btn.selected {
+      background:#d1d5db;      /* 灰底 */
+      color:#111;              /* 深字 */
+      border-color:#9ca3af;    /* 灰邊框 */
+    }
+
+    .question {
+      margin-top:10px;
+      font-weight:600;
+    }
+
+    .radio-row {
+      display:flex;
+      gap:16px;
+      align-items:center;
+      margin:8px 0 16px;
+      color:var(--muted);
+    }
+
+    .ok-btn {
+      width:100%;
+      height:40px;
+      border-radius:10px;
+      background:var(--ok);
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+      transition:background .2s, transform .1s;
+    }
+
+    .ok-btn:hover {
+      background:var(--ok-600);
+    }
+
+    .ok-btn:active {
+      transform:scale(.97);
+    }
+
+    /* ===== Main Content ===== */
+    .main {
+      display:grid;
+      grid-template-columns:1fr 320px;
+      gap:18px;
+    }
+
+    .grid {
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+    }
+
+    .voltage-stack {
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+    }
+
+    .chart {
+      padding:12px;
+      border-radius:16px;
+      border:1px solid var(--stroke);
+      background:#fff;
+      box-shadow:var(--shadow);
+    }
+
+    .chart .title {
+      font-weight:600;
+      color:var(--muted);
+      margin:6px 4px 8px;
+    }
+
+    .chart .placeholder {
+      height:140px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#9ca3af;
+      background:#f9fafb;
+      border-radius:12px;
+      border:1px dashed #d1d5db;
+    }
+
+    .baseline {
+      padding:14px;
+    }
+
+    .btn-blue {
+      display:block;
+      width:100%;
+      height:40px;
+      border-radius:10px;
+      background:var(--primary);
+      color:#fff;
+      font-weight:700;
+      border:none;
+      margin-bottom:10px;
+      cursor:pointer;
+      transition:background .2s, transform .1s;
+    }
+
+    .btn-blue:hover {
+      background:var(--primary-600);
+    }
+
+    .btn-blue:active {
+      transform:scale(.97);
+    }
+
+    .btn-blue[disabled] {
+      opacity:.5;
+      cursor:not-allowed;
+    }
+
+    /* ===== Pain Alarm ===== */
+    .alarm-wrap {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:18px;
+    }
+
+    .alarm-wrap .dot {
+      width:28px;
+      height:28px;
+      border-radius:999px;
+      background:var(--danger);
+    }
+
+    .alarm-wrap.is-off .dot {
+      display:block;
+      background:#fff;            /* 白燈 */
+      border:2px solid #111;      /* 黑框 */
+      box-shadow:none;
+      animation:none;             /* 不閃爍 */
+    }
+
+    .alarm-wrap.is-on .dot {
+      display:block;
+      animation:blink .8s steps(2,start) infinite;
+      box-shadow:0 0 0 3px rgba(239,68,68,.18),
+                 0 0 24px rgba(239,68,68,.55);
+    }
+
+    @keyframes blink {
+      0%   { opacity:1 }
+      50%  { opacity:.18 }
+      100% { opacity:1 }
+    }
+
+    /* ===== Control Buttons ===== */
+    .control {
+      padding:14px;
+    }
+
+    .green {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .green .btn {
+      flex:1;
+      height:42px;
+      border-radius:10px;
+      background:var(--ok);
+      color:#fff;
+      font-weight:700;
+      border:none;
+      cursor:pointer;
+      transition:background .2s, transform .1s;
+    }
+
+    .green .btn:hover {
+      background:var(--ok-600);
+    }
+
+    .green .btn:active {
+      transform:scale(.97);
+    }
+
+    .tag {
+      min-width:66px;
+      text-align:center;
+      height:42px;
+      display:grid;
+      place-items:center;
+      border-radius:10px;
+      border:1px solid var(--stroke);
+      background:#fff;
+      font-weight:700;
+    }
+
+    eeg-pane.eeg-host {
+      display:block;
+      height:180px;
+      border:1px dashed #d1d5db;
+      border-radius:12px;
+      background:#fff;
+    }
+
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns:1fr }
+      .main   { grid-template-columns:1fr }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="images/logo.png" alt="BATC Logo" class="logo"/>
+      <div class="name">BATC</div>
+      <button class="back" title="Back" onclick="history.back()">
+        <img src="images/back.png" alt="Back" class="back-icon"/>
+      </button>
+    </div>
+    <div class="actions">
+      <button class="iconBtn settings-btn" title="Settings">
+        <img src="images/settings.png" alt="Settings" class="icon-full"/>
+      </button>
+      <button class="notify-btn" title="Notifications">
+        <img src="images/notify.png" alt="Notifications" class="icon-full"/>
+      </button>
+      <div class="avatar">
+        <img src="images/DW.png" alt="Dr. Wang" class="avatar-img"/>
+        <strong>Dr. Wang</strong>
+      </div>
+      <button class="logout">Log out</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel sidebar">
+      <div class="patient">
+        <div class="avatar">
+          <img src="images/JW.png" alt="James Wilson" class="avatar-img"/>
+        </div>
+        <div>
+          <div style="font-weight:700">James Wilson</div>
+          <div class="badge">ID: PAT-2023-1296</div>
+        </div>
+      </div>
+
+      <div style="font-weight:800;margin-bottom:10px">Model</div>
+      <div class="model-grid">
+        <button class="model-btn">Model1</button>
+        <button class="model-btn">Model2</button>
+        <button class="model-btn">Model3</button>
+        <button class="model-btn">Model4</button>
+        <button class="model-btn">Model5</button>
+        <button class="model-btn">Model6</button>
+        <button class="model-btn">Model7</button>
+        <button class="model-btn">Model8</button>
+        <button class="model-btn">Model9</button>
+        <button class="model-btn">Model10</button>
+        <button class="model-btn">Model11</button>
+        <button class="model-btn">Model12</button>
+        <!-- <button class="model-btn selected">Model2</button> 被選中的中間要改成 model-btn selected  -->
+      </div>
+
+      <div class="question">Allow data collection for model training?</div>
+      <div class="radio-row">
+        <label><input type="radio" name="collect" checked> Yes</label>
+        <label><input type="radio" name="collect"> No</label>
+      </div>
+
+      <button class="ok-btn">OK</button>
+    </aside>
+
+    <section class="main">
+      <div class="grid">
+        <div class="voltage-stack">
+          <div class="panel chart">
+            <div class="title">Voltage (μV)</div>
+            <eeg-pane class="eeg-host" channel="C3" sync-group="A"></eeg-pane>
+          </div>
+          <div class="panel chart">
+            <div class="title">Voltage (μV)</div>
+            <eeg-pane class="eeg-host" channel="E2" sync-group="A"></eeg-pane>
+          </div>
+        </div>
+
+        <div class="panel chart">
+          <div class="title">Real-time Data (Last 60 seconds)</div>
+          <div class="placeholder">[ Chart / Data Visualization ]</div>
+          <div style="margin-top:8px;font-size:13px;color:#374151">
+            Selected Model: <strong id="selected-model">None</strong><br>
+            Data Collection: <span id="collect-status">Not confirmed</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="panel baseline">
+          <h4>Baseline recording after choosing the model</h4>
+          <button class="btn-blue" disabled>BASELINE START</button>
+          <button class="btn-blue" disabled>BASELINE STOP</button>
+        </div>
+
+        <div class="panel alarm-wrap is-off" id="pain-alarm"> <!-- 燈打開是is-on，燈關掉是is-off -->
+          <div class="dot" id="pain-light" aria-hidden="true"></div>
+          <div class="alarm-text">Pain alarm</div>
+        </div>
+
+        <div class="panel control">
+          <div class="green">
+            <button class="btn">Start Prediction</button>
+            <div class="tag">13:05</div>
+          </div>
+          <div class="green">
+            <button class="btn">Stop Prediction</button>
+            <div class="tag">13:10</div>
+          </div>
+          <div class="green">
+            <button class="btn">Finish and Stop Prediction</button>
+            <div class="tag">—</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
