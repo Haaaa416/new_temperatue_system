@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Batc.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+55e80cbe611d0243a590ab09c47c2b2eeafdadb4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+02594d7f1653dedddf3cd4a9e2e2af45151ed8b7")]
 [assembly: System.Reflection.AssemblyProductAttribute("Batc.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Batc.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

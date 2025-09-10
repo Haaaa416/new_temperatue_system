@@ -152,8 +152,6 @@ C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\c
 C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\compressed\v18oe0va55-h1s4sie4z3.gz
 C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\compressed\5caollpdno-63fj8s7r0e.gz
 C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\compressed\06azcfql96-0j3bgjxly4.gz
-C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\compressed\wq84ar6wi1-tc72eam8m6.gz
-C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\compressed\gld9z0gk4p-tc72eam8m6.gz
 C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\staticwebassets.development.json
@@ -163,3 +161,6 @@ C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\r
 C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\Batc.Web.pdb
 C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\Batc.Web.genruntimeconfig.cache
 C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\ref\Batc.Web.dll
+C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\Batc.Web.sourcelink.json
+C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\compressed\wq84ar6wi1-3wsga6ollx.gz
+C:\Users\user\new_temperatue_system\ljz\temperature2\Batc.Web\obj\Debug\net9.0\compressed\gld9z0gk4p-3wsga6ollx.gz
