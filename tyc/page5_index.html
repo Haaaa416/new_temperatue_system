@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BATC • Pain Alarm Console (Mock)</title>
+  <link rel="stylesheet" href="styles/page5_style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="images/logo.png" alt="BATC Logo" class="logo" />
+      <div class="name">BATC</div>
+      <button class="back" title="Back" onclick="history.back()">
+        <img src="images/back.png" alt="Back" class="back-icon" />
+      </button>
+    </div>
+    <div class="actions">
+      <button class="iconBtn settings-btn" title="Settings">
+        <img src="images/settings.png" alt="Settings" class="icon-full" />
+      </button>
+      <button class="notify-btn" title="Notifications">
+        <img src="images/notify.png" alt="Notifications" class="icon-full" />
+      </button>
+      <div class="avatar">
+        <img src="images/DW.png" alt="Dr. Wang" class="avatar-img" />
+        <strong>Dr. Wang</strong>
+      </div>
+      <button class="logout">Log out</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel sidebar">
+      <div class="patient">
+        <div class="avatar">
+          <img src="images/JW.png" alt="James Wilson" class="avatar-img" />
+        </div>
+        <div>
+          <div style="font-weight:700">James Wilson</div>
+          <div class="badge">ID: PAT-2023-1296</div>
+        </div>
+      </div>
+
+      <div style="font-weight:800;margin-bottom:10px">Model</div>
+      <div class="model-grid">
+        <button class="model-btn">Model1</button>
+        <button class="model-btn">Model2</button>
+        <button class="model-btn">Model3</button>
+        <button class="model-btn">Model4</button>
+        <button class="model-btn">Model5</button>
+        <button class="model-btn">Model6</button>
+        <button class="model-btn">Model7</button>
+        <button class="model-btn">Model8</button>
+        <button class="model-btn">Model9</button>
+        <button class="model-btn">Model10</button>
+        <button class="model-btn">Model11</button>
+        <button class="model-btn">Model12</button>
+      </div>
+
+      <div class="question">Allow data collection for model training?</div>
+      <div class="radio-row">
+        <label><input type="radio" name="collect" checked> Yes</label>
+        <label><input type="radio" name="collect"> No</label>
+      </div>
+
+      <button class="ok-btn">OK</button>
+    </aside>
+
+    <section class="main">
+      <div class="grid">
+        <div class="voltage-stack">
+          <div class="panel chart">
+            <div class="title">Voltage (μV)</div>
+            <eeg-pane class="eeg-host" channel="C3" sync-group="A"></eeg-pane>
+          </div>
+          <div class="panel chart">
+            <div class="title">Voltage (μV)</div>
+            <eeg-pane class="eeg-host" channel="E2" sync-group="A"></eeg-pane>
+          </div>
+        </div>
+
+        <div class="panel chart">
+          <div class="title">Real-time Data (Last 60 seconds)</div>
+          <div class="placeholder">[ Chart / Data Visualization ]</div>
+          <div style="margin-top:8px;font-size:13px;color:#374151">
+            Selected Model: <strong id="selected-model">None</strong><br>
+            Data Collection: <span id="collect-status">Not confirmed</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="panel baseline">
+          <h4>Baseline recording after choosing the model</h4>
+          <button class="btn-blue" disabled>BASELINE START</button>
+          <button class="btn-blue" disabled>BASELINE STOP</button>
+        </div>
+
+        <div class="panel alarm-wrap is-off" id="pain-alarm">       <!-- is-off燈沒亮，is-on燈閃爍-->
+          <div class="dot" id="pain-light" aria-hidden="true"></div>
+          <div class="alarm-text">Pain alarm</div>
+        </div>
+
+        <div class="panel control">
+          <div class="green">
+            <button class="btn">Start Prediction</button>
+          </div>
+          <div class="green">
+            <button class="btn">Stop Prediction</button>
+          </div>
+          <div class="green">
+            <button class="btn">Finish and Stop Prediction</button>
+          </div>
+        </div>
+
+        <div class="panel pred-log">
+          <h4>Prediction Log</h4>
+          <div class="log-box">
+            <div class="log-row">
+              <span class="ts">--:--</span>
+              <span class="badge badge-start">START</span>
+              <span>Waiting for prediction...</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+</body>
+</html>
