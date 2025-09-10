@@ -1,5 +1,5 @@
 @using Batc.Web.Models
-
+<!-- 應該要去讀取到資料庫(patient)顯示已經有加入資料的病人-->
 @code {
     [Parameter] public Patient Patient { get; set; } = default!;
     private string DetailUrl => $"/patient/{Uri.EscapeDataString(Patient.Id)}";

@@ -27,6 +27,7 @@
             </div>
 
             <div class="detail-grid">
+                <!-- 應該要去讀取到資料庫(patient)顯示已經有加入資料的病人-->
                 <div><label>Date of Birth</label><span>@FormatDate(patient.DateOfBirth)</span></div>
                 <div><label>Age</label><span>@patient.Age</span></div>
                 <div><label>Gender</label><span>@patient.Gender</span></div>
@@ -38,7 +39,7 @@
             <div class="detail-actions">
                 <button class="back" @onclick="GoBack">返回清單</button>
                 <!-- 新增：Confirm 按鈕 -->
-                <button class="confirm" @onclick="GoConfirm">Confirm</button>
+                <button class="confirm" @onclick="GoConfirm">確認 </button>
             </div>
         </div>
     }
@@ -58,10 +59,9 @@
     // 新增：導向 /confirm/{id}
     private void GoConfirm()
     {
-        // 若你想導去固定頁就用 Nav.NavigateTo("/confirm")
         Nav.NavigateTo($"/confirm/{Id}");
     }
-
+    
     private static string FormatDate(DateTime? dt) =>
         dt.HasValue ? dt.Value.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture) : "-";
 }

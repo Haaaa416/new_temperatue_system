@@ -1,0 +1,255 @@
+﻿@page "/confirm/{id}"
+@using System.Globalization
+@using Microsoft.AspNetCore.Components.Web
+@using Batc.Web.Models
+@inject Batc.Web.Services.AppState AppState
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+
+<header class="topbar">
+  <div class="brand">
+    <img src="images/logo.png" alt="BATC" />
+    <span>BATC</span>
+    <button class="back-btn" title="Back" @onclick="GoBack">
+      <img src="images/back.png" alt="Back" />
+      <span>Back</span>
+    </button>
+  </div>
+
+  <div class="user-section">
+    <button class="icon-btn settings-btn" @onclick="ToggleHelp">
+      <img src="images/setting.png" alt="Settings" width="20" height="20" />
+    </button>
+    <button class="icon-btn notification-btn">
+      <img src="images/notification.png" alt="Notifications" width="20" height="20" />
+    </button>
+
+    <div class="user">
+      <img src="images/醫生_1.png" alt="Dr. Wang" class="avatar" />
+      <span>Dr. Wang</span>
+    </div>
+
+    <button class="logout-btn" @onclick="Logout">Log out</button>
+  </div>
+</header>
+
+@if (showHelp)
+{
+  <div class="modal" @onclick="ToggleHelp">
+    <div class="modal-card" @onclick:stopPropagation="true">
+      <div class="modal-head">
+        <strong>使用說明</strong>
+        <button class="x" @onclick="ToggleHelp">×</button>
+      </div>
+      <div class="modal-body">
+        <p>點 Front/Back 的<strong>紅點</strong>選擇部位，左側 Recent Visits 會新增「日期＋部位」。</p>
+        <p>按 <b>Confirm</b> 會把座標與部位帶到 <code>/prediction</code>；<b>Clean</b> 可清除與重選。</p>
+      </div>
+    </div>
+  </div>
+}
+
+@{
+    var p = (string.IsNullOrWhiteSpace(Id)
+                ? AppState.Patients?.FirstOrDefault()
+                : AppState.Patients?.FirstOrDefault(x => x.Id == Id))
+            ?? new Patient {
+                Name = "James Wilson", Id = "PAT-2023-1296", Age = 35, Gender = "Male",
+                BloodType = "A", Height = 178, Weight = 75, AvatarUrl = "images/病人_1.png"
+            };
+    var avatar = string.IsNullOrWhiteSpace(p.AvatarUrl) ? "images/病人_1.png" : p.AvatarUrl;
+}
+
+<main class="wrap">
+  <div class="grid">
+    <!-- 左側 -->
+    <section class="card ">
+      <div class="header">Patient Details</div>
+      <div class="body">
+        <div class="p-info">
+            <!-- 應該要去讀取到資料庫(patient)顯示已經有加入資料的病人-->
+          <img class="p-avatar-img" src="@avatar" alt="@p.Name" />
+          <div>
+            <div class="p-name">@p.Name</div>
+            <div class="p-id">ID: @p.Id</div>
+          </div>
+        </div>
+
+        <div class="detail-grid">
+            <div><label>Age</label><span>@p.Age</span></div>
+            <div><label>Gender</label><span>@p.Gender</span></div>
+            <div><label>Blood Type</label><span>@p.BloodType</span></div>
+            <div><label>Height(cm)</label><span>@p.Height</span></div>
+            <div><label>Weight(kg)</label><span>@p.Weight</span></div>
+        </div>
+
+
+        <div class="visits">
+          <h4>Recent Visits</h4>
+          <ul>
+            @if (visits.Count == 0)
+            {
+              <li><span class="dot"></span><span>No records yet</span></li>
+            }
+            else
+            {
+              @foreach (var v in visits.OrderByDescending(v => v.Date))
+              {
+                <li><span class="dot"></span><span>@v.Date.ToString("MMM dd, yyyy") – @v.Label</span></li>
+              }
+            }
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 右側 -->
+    <section class="card viz">
+      <div class="header">Body Visualization</div>
+      <div class="body">
+        <div class="stage">
+          <!-- Front -->
+          <div class="figure-wrap">
+            <div class="caption">Front</div>
+            <div class="image-canvas">
+              <img src="images/body.png" alt="Front" />
+              @foreach (var pt in FrontPreset)
+              {
+                var key = KeyFor(pt, true);
+                <button class="dot-btn"
+                        title="@pt.Label"
+                        style="left:@(pt.X - DotR)px; top:@(pt.Y - DotR)px"
+                        disabled="@(selectionLocked && key != selectedKey)"
+                        @onclick="() => SelectPreset(pt, true)">
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Back -->
+          <div class="figure-wrap">
+            <div class="caption">Back</div>
+            <div class="image-canvas">
+              <img src="images/body.png" alt="Back" />
+              @foreach (var pt in BackPreset)
+              {
+                var key = KeyFor(pt, false);
+                <button class="dot-btn"
+                        title="@pt.Label"
+                        style="left:@(pt.X - DotR)px; top:@(pt.Y - DotR)px"
+                        disabled="@(selectionLocked && key != selectedKey)"
+                        @onclick="() => SelectPreset(pt, false)">
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar toolbar-split">
+          <div class="toolbar-left"></div>
+          <div class="toolbar-right" style="display:flex;gap:10px;">
+            <button class="btn clean " @onclick="Clean" disabled="@(!selectionLocked)">Clean</button>
+            <button class="btn confirm" @onclick="Confirm" disabled="@(!lastPoint.HasValue)">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+@code {
+  [Parameter] public string? Id { get; set; }
+  private Patient? patient;
+
+  protected override void OnParametersSet()
+    {
+    patient = AppState.Patients?.FirstOrDefault(p => p.Id == Id);
+    }
+
+  // UI
+  private bool showHelp;
+  private void ToggleHelp() => showHelp = !showHelp;
+  private void GoBack() => Nav.NavigateTo("/patients");
+  private void Logout() => Nav.NavigateTo("/");
+
+  // 畫布基準
+  private const double CanvasW = 280, CanvasH = 380;
+  private const double DotR = 7;
+
+  // 預設紅點（示例，可換成你的 10 顆真實座標）
+  private static readonly P[] FrontPreset = new[]
+  {
+    new P(110,115,"left shoulder"),
+    new P(175,115,"right shoulder"),
+    new P( 70,170,"left upper arm"),
+    new P(215,170,"right upper arm"),
+    new P(120,250,"left knee"),
+    new P(165,250,"right knee"),
+    new P(113,290,"left ankle"),
+    new P(173,290,"right ankle"),
+  };
+  private static readonly P[] BackPreset = new[]
+  {
+    new P(140,140,"upper back"),
+    new P(140,200,"mid back"),
+  };
+
+  // 最近新增紀錄
+  private readonly List<Visit> visits = new();
+
+  // 本次選擇（帶去 /prediction）
+  private (double nx, double ny, bool isFront)? lastPoint;
+
+  // 一次只能點一顆：鎖定狀態 & 被選到的 key
+  private bool selectionLocked = false;
+  private string? selectedKey = null;
+
+  // 為了 Clean 能移除剛剛新增那一筆
+  private int? lastVisitIndex = null;
+  private string? lastVisitLabel = null;
+
+  private static string KeyFor(P pt, bool isFront) => $"{(isFront ? "F" : "B")}:{pt.X},{pt.Y}";
+
+  private void SelectPreset(P pt, bool isFront)
+  {
+    var key = KeyFor(pt, isFront);
+    if (selectionLocked && key != selectedKey) return; // 已鎖定且不是同一顆 → 忽略
+
+    if (!selectionLocked)
+    {
+      visits.Add(new Visit { Label = pt.Label, Date = DateTime.Today });
+      lastVisitIndex = visits.Count - 1;
+      lastVisitLabel = pt.Label;
+      selectionLocked = true;
+      selectedKey = key;
+    }
+
+    lastPoint = (pt.X / CanvasW, pt.Y / CanvasH, isFront);
+  }
+
+  private void Clean()
+  {
+    selectionLocked = false;
+    selectedKey = null;
+    lastPoint = null;
+
+    if (lastVisitIndex.HasValue && lastVisitIndex.Value >= 0 && lastVisitIndex.Value < visits.Count)
+    {
+      if (visits[lastVisitIndex.Value].Label == lastVisitLabel)
+        visits.RemoveAt(lastVisitIndex.Value);
+    }
+    lastVisitIndex = null;
+    lastVisitLabel = null;
+  }
+
+  private void Confirm()
+  {
+    if (!lastPoint.HasValue) return;
+    var (nx, ny, front) = lastPoint.Value;
+    var lab = Uri.EscapeDataString(lastVisitLabel ?? "");
+    Nav.NavigateTo($"/device?x={nx:F4}&y={ny:F4}&front={(front ? "1" : "0")}&label={lab}");
+  }
+
+  private record P(double X, double Y, string Label);
+  private class Visit { public string Label { get; set; } = ""; public DateTime Date { get; set; } }
+}

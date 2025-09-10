@@ -263,6 +263,7 @@ body[b-7i2sy2985x] {
 .detail-actions[b-ooivdabmy6] {
     display: flex;
     justify-content: flex-end;
+    gap: 10px; /* �s�W�G�������s���Z */
     margin-top: 16px;
 }
 
@@ -278,6 +279,21 @@ body[b-7i2sy2985x] {
 .detail-actions .back:hover[b-ooivdabmy6] {
     background: #f9fafb;
 }
+.detail-actions .confirm[b-ooivdabmy6] {
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: 1px solid #2563eb;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    .detail-actions .confirm:hover[b-ooivdabmy6] {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+    }
 /* _content/Batc.Web/Components/Pages/Patients.razor.rz.scp.css */
 .patients-page[b-vwt9m0s8cw] {
     display: flex;
