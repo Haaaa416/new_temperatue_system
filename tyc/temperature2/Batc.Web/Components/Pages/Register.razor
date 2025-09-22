@@ -1,0 +1,123 @@
+@page "/register"
+@rendermode InteractiveServer
+@using Batc.Web.Components.Shared
+@using Microsoft.EntityFrameworkCore
+@using Batc.Web.Models
+@using Batc.Web.Models.Data
+@using Batc.Web.Services;
+@inject Batc.Web.Models.Data.AppDbContext Db
+@inject NavigationManager Nav
+@inject ILogger<Register> Log
+@inject IUsersService UsersService
+
+
+<!-- 頁面頂端系統訊息（錯誤優先；有錯不顯示成功） -->
+<SystemMessage Text="@(string.IsNullOrEmpty(err) ? msg : err)"
+               Kind="@(string.IsNullOrEmpty(err) ? "success" : "error")"
+               DurationMs="3000" />
+
+<div class="register-page">
+    <div class="panel-title">Add Login Account</div>
+
+    <div class="form-card">
+        <div class="form-row" @onsubmit="HandleSubmit" @onsubmit:preventDefault="true">
+            <label>Name:</label>
+            <input type="text" @bind="userDraft.Username" @bind:event="oninput" placeholder="Enter Name" />
+        </div>
+
+        <div class="form-row" @onsubmit="HandleSubmit" @onsubmit:preventDefault="true">
+            <label>ID:</label>
+            <input type="number" @bind="userDraft.LoginID" @bind:event="oninput" placeholder="Enter ID" />
+        </div>
+
+        <div class="form-row" @onsubmit="HandleSubmit" @onsubmit:preventDefault="true">
+            <label>Role:</label>
+            <select @bind="userDraft.RoleID"> 
+                <option value="1">Doctor</option>
+                <option value="2">Nurse</option>
+                <option value="3">Admin</option>
+            </select>
+        </div>
+
+        <div class="actions" @onsubmit="HandleSubmit" @onsubmit:preventDefault="true">
+            <button class="btn-secondary" @onclick="Back"> Back</button>
+            <button class="btn-add" type="submit" @onclick="HandleSubmit">ADD</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private void Back() => Nav.NavigateTo("/");
+
+    private UserDraft userDraft = new();
+
+    string username = "";
+    int roleId = 3;
+    string? msg, err;
+
+    private async Task HandleSubmit()
+    {
+        msg = err = null;
+
+        Console.WriteLine("Register.HandleSubmit START");   // ← 第1個記號
+
+        try
+        {
+            
+            // 伺服器端基本檢查（保留你原本前端檢查也沒問題）
+            if (userDraft.LoginID is null || userDraft.LoginID <= 0)
+                throw new ArgumentException("LoginID 必須是正整數。");
+            if (string.IsNullOrWhiteSpace(userDraft.Username))
+                throw new ArgumentException("Username 不可空白。");
+
+            // 呼叫服務層（和 PatientsService 的風格一致：欄位對欄位）
+            var created = await UsersService.CreateAsync(new()
+            {
+                LoginID  = userDraft.LoginID,
+                Username = userDraft.Username.Trim(),
+                RoleID   = userDraft.RoleID
+            });
+
+            Console.WriteLine("Register.HandleSubmit DONE"); // ← 第2個記號
+
+            // 成功訊息（你有現成訊息區就綁到那邊）
+            msg = $"建立成功：Name={created.Username}, ID={created.LoginID}";
+
+            // 清表單（不動你的 HTML，只是把值清空）
+            userDraft = new();
+            StateHasChanged();
+        }
+        catch (DbUpdateException ex)
+        {
+            // 真正的 SQL 問題（主鍵重複、NOT NULL、DEFAULT 等）會出現在這裡
+            err = $"資料庫寫入失敗：{ex.GetBaseException().Message}";
+        }
+        catch (Exception ex)
+        {
+            err = ex.Message;
+        }
+        StateHasChanged(); // 讓 SystemMessage 立即刷新
+    }
+    async Task DoRegister()
+    {
+        msg = err = null;
+        if (string.IsNullOrWhiteSpace(username)) { err = "Username 必填"; return; }
+        if (roleId < 1 || roleId > 3) { err = "RoleID 僅允許 1=Doctor, 2=Nurse, 3=Admin"; return; }
+
+        try
+        {
+        // 檢查重複
+        if (await Db.Users.AnyAsync(u => u.Username == username.Trim()))
+        {
+            err = "此帳號已存在";
+            return;
+        }
+
+        msg = "已建立，請回登入頁登入";
+        }
+        catch (Exception ex) { err = ex.Message; }
+    }
+}
+
+
+

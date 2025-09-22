@@ -1,0 +1,34 @@
+/* 系統訊息基底 */
+.sysmsg[b-bk41e1tppe] {
+  position: sticky; top: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .75rem 1rem; margin: 0; border: 0; font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0,0,0,.08);
+}
+.sysmsg-success[b-bk41e1tppe] { 
+    background:#e8f7ee; 
+    color:#0b7a3b; 
+}
+
+.sysmsg-error[b-bk41e1tppe]  { 
+    background:#fdeaea; 
+    color:#b42318; 
+}
+
+.sysmsg-info[b-bk41e1tppe]   { 
+    background:#eaf2fe; 
+    color:#1e54b7; 
+}
+
+.sysmsg-warn[b-bk41e1tppe]   { 
+    background:#fff6e6; 
+    color:#9a5b00; 
+}
+
+.sysmsg-close[b-bk41e1tppe]{
+  border:0;
+  background:transparent; 
+  font-size:1.1rem; 
+  cursor:pointer; 
+  color:inherit;
+}

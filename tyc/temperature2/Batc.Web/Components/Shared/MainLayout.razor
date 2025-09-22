@@ -1,0 +1,19 @@
+@inherits LayoutComponentBase
+@inject NavigationManager Nav
+
+<header class="topbar">
+  <div class="brand">BATC</div>
+  <div class="spacer"></div>
+  @if (!IsPatients)
+  {
+      <UserChip />   <!-- 其他頁面顯示預設卡片 -->
+  }
+</header>
+
+<main class="main">
+  @Body
+</main>
+
+@code {
+    private bool IsPatients => Nav.Uri.Contains("/patients", StringComparison.OrdinalIgnoreCase);
+}

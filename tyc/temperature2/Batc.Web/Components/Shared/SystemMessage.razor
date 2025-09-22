@@ -1,0 +1,36 @@
+@inherits ComponentBase
+@if (Visible && !string.IsNullOrEmpty(Text))
+{
+    <div class="sysmsg @CssClass" role="status" aria-live="polite">
+        <span>@Text</span>
+        <button type="button" class="sysmsg-close" @onclick="Hide">×</button>
+    </div>
+}
+
+@code {
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string Kind { get; set; } = "info"; // "success" | "error" | "info" | "warn"
+    [Parameter] public int DurationMs { get; set; } = 3000; // 自動隱藏時間；0 = 不自動隱藏
+
+    private bool Visible;
+    private string CssClass => Kind switch {
+        "success" => "sysmsg-success",
+        "error"   => "sysmsg-error",
+        "warn"    => "sysmsg-warn",
+        _         => "sysmsg-info"
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // 有文字就顯示，且若設定 Duration 就自動隱藏
+        Visible = !string.IsNullOrEmpty(Text);
+        if (Visible && DurationMs > 0)
+        {
+            var current = Text;               // 避免延遲期間文字被更新
+            await Task.Delay(DurationMs);
+            if (Text == current) Visible = false;
+        }
+    }
+
+    void Hide() => Visible = false;
+}

@@ -1,0 +1,111 @@
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Nav
+
+@if (authLoaded && isAuth)
+{
+    <div class="userchip" title="@fullName">
+        <div class="avatar">@initial</div>
+        <div class="meta">
+            <div class="alias">@alias</div>
+            <div class="role">@roleText</div>
+        </div>
+        <button class="signout" @onclick="SignOut">Sign out</button>
+    </div>
+}
+
+@code {
+    // ✅ 允許為 null，避免在未注入/未提供時解構
+    [CascadingParameter] private Task<AuthenticationState>? AuthTask { get; set; }
+
+    private bool isAuth = false, authLoaded = false;
+    private string alias = "", roleText = "", fullName = "", initial = "U";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // 1) AuthTask 可能為 null
+        if (AuthTask is null)
+        {
+            isAuth = false;
+            authLoaded = true;
+            return;
+        }
+
+        var auth = await AuthTask;
+
+        // 2) auth 或 user/identity 可能為 null
+        var user = auth?.User;
+        var identity = user?.Identity;
+
+        // 3) 未登入（或沒有 Identity）
+        if (identity?.IsAuthenticated != true)
+        {
+            isAuth = false;
+            authLoaded = true;
+            return;
+        }
+
+        isAuth = true;
+        authLoaded = true;
+
+        // 4) 取 Name 與 Role（都可能取不到，給預設空字串）
+        fullName = identity.Name
+                   ?? user!.FindFirst(ClaimTypes.Name)?.Value
+                   ?? string.Empty;
+
+        var roleId = user!.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty;
+
+        // 5) 顯示文字（Role）
+        roleText = roleId switch
+        {
+            "1" => "Doctor",
+            "2" => "Nurse",
+            "3" => "Admin",
+            _   => "User"
+        };
+
+        // 6) 代稱：中英文姓氏切法（都以安全分支處理）
+        var surname = Surname(fullName);
+
+        // 英文代稱：Dr. Chen / Nurse Wang；要中文可改成「王醫師 / 王護理師」
+        alias = roleId switch
+        {
+            "1" => $"Dr. {surname}",
+            "2" => $"Nurse {surname}",
+            "3" => $"Admin {surname}",
+            _   => $"User {surname}"
+        };
+
+        initial = MakeInitial(fullName);
+    }
+
+    private void SignOut()
+        => Nav.NavigateTo("/auth/signout", forceLoad: true);
+
+    private static string Surname(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return "—";
+
+        // 有 CJK 字元就當中文名，取第一個字當姓
+        bool hasCjk = name.Any(c => c >= 0x4E00 && c <= 0x9FFF);
+        if (hasCjk) return name[..1];
+
+        // 英文名：取最後一段
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length > 0 ? parts[^1] : name;
+    }
+
+    private static string MakeInitial(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return "U";
+
+        bool hasCjk = name.Any(c => c >= 0x4E00 && c <= 0x9FFF);
+        if (hasCjk) return name[..1];
+
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length >= 2)
+            return $"{char.ToUpperInvariant(parts[0][0])}{char.ToUpperInvariant(parts[^1][0])}";
+
+        return char.ToUpperInvariant(name[0]).ToString();
+    }
+}

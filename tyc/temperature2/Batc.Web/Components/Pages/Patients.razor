@@ -1,0 +1,533 @@
+﻿@page "/patients"
+@using Batc.Web.Models
+@using System.Security.Claims
+@using Batc.Web.Components.Pages
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject Batc.Web.Services.AppState AppState
+@inject Batc.Web.Services.IPatientsService PatientsService
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+<header class="topbar">
+  <div class="brand">
+    <img src="images/logo.png" alt="BATC" />
+    <span>BATC</span>
+  </div>
+  <div class="user-section">
+    <button class="icon-btn settings-btn" @onclick="ShowHelp">
+      <img src="images/setting.png" alt="Settings" width="20" height="20" />
+    </button>
+    
+    <button class="icon-btn notification-btn">
+      <img src="images/notification.png" alt="Notifications" width="20" height="20" />
+    </button>
+    
+    <!--
+    <div class="user-info">
+      <img src="images/醫生_1.png" alt="Dr. Wang" class="user-avatar" />
+      <span class="user-name">Dr. Wang</span>
+    </div>
+    <div class="patients-header">
+    -->
+
+    <AuthorizeView>
+        <Authorized Context="ctx">
+        <div class="userbox">
+            <img src="@GetAvatar(ctx.User)"
+                alt="@GetAlias(ctx.User)"
+                class="user-avatar"
+                onerror="this.src='/images/default.png'">
+            <span class="alias">@GetAlias(ctx.User)</span>
+        </div>
+        </Authorized>
+        <NotAuthorized>
+            <div class="alias"></div>
+        </NotAuthorized>
+    </AuthorizeView>
+    
+    <button class="logout-btn" @onclick="Logout">Log out</button>
+  </div>
+</header>
+
+<!-- 說明彈出視窗 -->
+@if (showHelpModal)
+{
+    <div class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;" @onclick="HideHelp">
+        <div class="modal-content" style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);" @onclick:stopPropagation="true">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; color: #000 ;">使用說明</h3>
+                <button @onclick="HideHelp" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
+            </div>
+            
+            <div style="line-height: 1.6; color: #555;">
+                <h4 style="color: #000; margin-top: 0;">功能說明：</h4>
+                <p>• <strong>左側區域：</strong>輸入完病患資料點擊ADD後會自動顯示病患資料以及系統生成的ID</p>
+                
+                <h4 style="color: #000;">輸入限制：</h4>
+                <p>• <strong>出生年月日：</strong>不能填寫未來日期</p>
+                <p>• <strong>身高：</strong>不能為負數，且不能高於300公分</p>
+                <p>• <strong>體重：</strong>不能為負數，且不能高於1000公斤</p>
+                <p>• <strong>姓名：</strong>必填欄位，不能為空</p>
+                
+                <div style="margin-top: 20px; padding: 10px; background-color: #f0f8ff; border-radius: 4px; border-left: 4px solid #0066cc;">
+                    <small style="color: #0066cc;"><strong>提示：</strong>如果輸入資料不符合限制條件，系統會顯示相對應的錯誤訊息</small>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="patients-page">
+    <div class="patients-list">
+
+         <!-- 應該要去讀取到資料庫(patient)顯示已經有加入資料的病人-->
+        
+        @if (AppState.Patients is null || !AppState.Patients.Any())
+        {
+            <div class="empty-hint">目前沒有病人資料</div>
+        }
+        else
+        {
+            @if (patients is null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {                
+                <div class="grid">
+                    @foreach (Patient p in patients)
+                    {
+                        <PatientCard Patient="p" />
+                    }
+                </div>
+                
+                /*
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
+                @foreach (var p in AppState.Patients)
+                {
+                    <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="d-flex align-items-center p-3">
+                        <img src="@(string.IsNullOrWhiteSpace(p.AvatarUrl) ? "images/病人_1.png" : p.AvatarUrl)"
+                            class="rounded-circle me-3" alt="avatar" width="56" height="56"
+                            onerror="this.src='images/病人_1.png'">
+                        <div>
+                            <div class="fw-semibold">@p.Name</div>
+                            <div class="text-muted small">@p.Id</div>
+                        </div>
+                        </div>
+                        <div class="card-body pt-0">
+                        <div class="small text-muted">
+                            性別：@(p.Gender ?? "-")　血型：@(p.BloodType ?? "-")
+                        </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pt-0 d-flex gap-2">
+                        <button class="btn btn-sm btn-primary" @onclick="@(()=>Nav.NavigateTo($"/patients/{Uri.EscapeDataString(p.Id)}"))">查看</button>
+                        </div>
+                    </div>
+                    </div>
+                }
+                </div>
+                */
+            }
+        }
+
+    </div>
+  
+  <!-- 右側：新增病患表單 -->
+  <div class="add-panel">
+    <h3 class="panel-title">Add Patient</h3>
+
+    <!-- 錯誤訊息顯示區域 - 支援多個錯誤 -->
+    @if (errorMessages.Any())
+    {
+        <div class="error-messages" style="background-color: #fee; color: #c33; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #fcc;">
+            @foreach (var error in errorMessages)
+            {
+                <div class="error-item" style="margin-bottom: 5px;">• @error</div>
+            }
+        </div>
+    }
+
+    <div class="form-card">
+      <div class="form-row">
+        <label>Name:</label>
+        <input @bind="draft.Name" placeholder="Full name" />
+      </div>
+      
+      <div class="form-row">
+        <label>Date of Birth:</label>
+        <input type="date" 
+               @bind="draft.DateOfBirth" 
+               max="@maxDate"
+               @oninput="CalculateAge" />
+      </div>
+      
+      <div class="form-row">
+        <label>Age:</label>
+        <input type="number" 
+               @bind="calculatedAge" 
+               readonly 
+               style="background-color: #f3f4f6;" />
+      </div>
+      
+      <div class="form-row">
+        <label>Gender:</label>
+        <select @bind="draft.Gender">
+          <option value="">Select…</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
+      </div>
+      
+      <div class="form-row">
+        <label>Blood Type:</label>
+        <select @bind="draft.BloodType">
+          <option value="">Select…</option>
+          <option>A</option>
+          <option>B</option>
+          <option>O</option>
+          <option>AB</option>
+        </select>
+      </div>
+      
+      <div class="form-row">
+        <label>Height(cm):</label>
+        <input type="number" step="0.1" max="300" @bind="draft.Height" placeholder="cm" />
+      </div>
+      
+      <div class="form-row">
+        <label>Weight(kg):</label>
+        <input type="number" step="0.1" @bind="draft.Weight" placeholder="kg" />
+      </div>
+      
+      <div class="actions">
+        <button class="btn-add" @onclick="AddPatient">ADD</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+    private Patient draft = new();
+    private string maxDate = DateTime.Today.ToString("yyyy-MM-dd");
+    private int? calculatedAge;
+    private List<Batc.Web.Models.Patient>? patients;
+    // private List<Patient> patients = new(); // 先給一個空清單，避免 null 警告
+    
+    // 👉 這裡放
+    // [Parameter] public string id { get; set; } = default!;
+    // private Patient? patient;
+    
+    // 改為錯誤訊息列表，支援多個錯誤同時顯示
+    private List<string> errorMessages = new();
+    
+    // 控制說明視窗顯示
+    private bool showHelpModal = false;
+
+    private bool loading = true, empty;
+
+    [CascadingParameter] private Task<AuthenticationState>? AuthTask { get; set; }
+
+    private string alias = ""; // 右上角顯示：Dr. Chen / Nurse 王 / Admin Lee
+
+    private string GetAlias(ClaimsPrincipal user)
+    {
+        if (user?.Identity?.IsAuthenticated != true) return "";
+        var fullName = user.Identity?.Name
+                       ?? user.FindFirst(ClaimTypes.Name)?.Value
+                       ?? "";
+        var roleId   = user.FindFirst(ClaimTypes.Role)?.Value ?? "";
+        var surname  = Surname(fullName);
+
+        // 想中文可改：$"{surname}醫師 / 護理師 / 管理員"
+        return roleId switch {
+            "1" => $"Dr. {surname}",
+            "2" => $"Nurse {surname}",
+            "3" => $"Admin {surname}",
+            _   => $"User {surname}"
+        };
+    }
+
+    private string GetAvatar(ClaimsPrincipal user)
+    {
+        // 簡單範例：依角色用不同圖（或你就直接 return "/images/醫生_1.png"）
+        var roleId = user.FindFirst(ClaimTypes.Role)?.Value ?? "";
+        return roleId switch {
+            "1" => "/images/醫生_1.png",
+            "2" => "/images/護理師_1.png",
+            "3" => "/images/管理員_1.png",
+            _   => "/images/default.png"
+        };
+    }
+
+    private static string Surname(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return "—";
+        bool cjk = name.Any(c => c >= 0x4E00 && c <= 0x9FFF);
+        if (cjk) return name[..1];
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length > 0 ? parts[^1] : name;
+    }
+
+    protected override void OnInitialized()
+    {
+        // 設定最大日期為今天
+        maxDate = DateTime.Today.ToString("yyyy-MM-dd");
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        /*
+        // 先從快取找
+        patient = AppState.Patients.FirstOrDefault(x => x.Id == id);
+
+        // 找不到就打 DB 並補回快取
+        if (patient is null)
+        {
+            patient = await PatientsService.GetByCodeAsync(id);
+        }
+        */
+        await PatientsService.EnsureCacheAsync();
+        patients = AppState.Patients;           // 指到快取（或用 .ToList() 做複本）
+
+        patients = (await PatientsService.GetAllAsync())
+            .GroupBy(x=>x.Id).Select(g=>g.First()).ToList(); // 去重保險
+        empty   = patients.Count == 0;
+        loading = false;
+    }
+    
+    
+    private void CalculateAge(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value?.ToString(), out var birthDate))
+        {
+            draft.DateOfBirth = birthDate;
+            
+            // 計算年齡
+            var today = DateTime.Today;
+            var age = today.Year - birthDate.Year;
+            
+            // 如果今年還沒過生日，年齡減1
+            if (birthDate.Date > today.AddYears(-age))
+            {
+                age--;
+            }
+            
+            calculatedAge = age;
+            draft.Age = age;
+        }
+        else
+        {
+            calculatedAge = null;
+            draft.Age = 0;
+        }
+    }
+    
+    private void ShowHelp()
+    {
+        showHelpModal = true;
+    }
+    
+    private void HideHelp()
+    {
+        showHelpModal = false;
+    }
+    
+    private void Logout()
+    {
+        draft = new();
+        calculatedAge = null;
+        errorMessages.Clear();
+        showHelpModal = false; // 登出時也關閉說明視窗
+        Nav.NavigateTo("/");
+    }
+    
+    private void GoDetail(string id)
+    {
+        var url = $"/patients/{Uri.EscapeDataString(id)}";
+        Nav.NavigateTo(url);
+    }
+    
+    private async Task AddPatient()
+    {
+        // 清除之前的錯誤訊息
+        errorMessages.Clear();
+
+        // 收集所有錯誤
+        if (string.IsNullOrWhiteSpace(draft.Name)) 
+        {
+            errorMessages.Add("請輸入病患姓名");
+        }
+
+        // 檢查日期是否有效且不是未來日期
+        if (draft.DateOfBirth > DateTime.Today)
+        {
+            errorMessages.Add("出生日期不能是未來日期");
+        }
+
+        // 檢查身高限制
+        if (draft.Height > 300)
+        {
+            errorMessages.Add("身高沒那麼高太離譜");
+        }
+        
+        if (draft.Height < 0)
+        {
+            errorMessages.Add("身高不能為負數");
+        }
+        
+        // 檢查體重限制
+        if (draft.Weight < 0)
+        {
+            errorMessages.Add("體重不能為負數");
+        }
+        
+        if (draft.Weight > 1000)
+        {
+            errorMessages.Add("體重不能超過1000公斤");
+        }
+        
+        // 如果有任何錯誤，就不繼續執行
+        if (errorMessages.Any())
+        {
+            return;
+        }
+
+        if (errorMessages.Any()) return;
+
+        // 沒有錯誤的話，繼續原有的新增邏輯
+        // 生成 PAT-年份-隨機4位數字 格式的ID
+        var year = DateTime.Now.Year;
+        var randomNumber = Random.Shared.Next(1000, 9999);
+        draft.Id = $"PAT-{year}-{randomNumber}";
+
+        // 根據性別設定照片
+        draft.AvatarUrl = draft.Gender?.ToLower() switch
+        {
+            "male" => "images/病人_1.png",
+            "female" => "images/病人_2.png",
+            _ => "images/病人_1.png"
+        };
+
+        // 確保年齡已經設定
+        if (calculatedAge.HasValue)
+        {
+            draft.Age = calculatedAge.Value;
+        }
+
+        // ✅ 寫 DB，並由 Service 同步快取（不用再手動 AppState.Patients.Add）
+        await PatientsService.CreateAsync(new Patient
+        {
+            Id = draft.Id,
+            Name = draft.Name,
+            DateOfBirth = draft.DateOfBirth,
+            Age = draft.Age,
+            Gender = draft.Gender,
+            BloodType = draft.BloodType,
+            Height = draft.Height,
+            Weight = draft.Weight,
+            AvatarUrl = draft.AvatarUrl
+        });
+
+        // 清表單
+        draft = new();
+        calculatedAge = null;
+        errorMessages.Clear();
+        StateHasChanged();
+    }
+
+    /*
+    private void AddPatient()
+    {
+        // 要加入到資料庫(patient) 
+        // 清除之前的錯誤訊息
+        errorMessages.Clear();
+        
+        // 收集所有錯誤
+        if (string.IsNullOrWhiteSpace(draft.Name)) 
+        {
+            errorMessages.Add("請輸入病患姓名");
+        }
+        
+        // 檢查日期是否有效且不是未來日期
+        if (draft.DateOfBirth > DateTime.Today)
+        {
+            errorMessages.Add("出生日期不能是未來日期");
+        }
+        
+        // 檢查身高限制
+        if (draft.Height > 300)
+        {
+            errorMessages.Add("身高沒那麼高太離譜");
+        }
+        
+        if (draft.Height < 0)
+        {
+            errorMessages.Add("身高不能為負數");
+        }
+        
+        // 檢查體重限制
+        if (draft.Weight < 0)
+        {
+            errorMessages.Add("體重不能為負數");
+        }
+        
+        if (draft.Weight > 1000)
+        {
+            errorMessages.Add("體重不能超過1000公斤");
+        }
+        
+        // 如果有任何錯誤，就不繼續執行
+        if (errorMessages.Any())
+        {
+            return;
+        }
+        
+        // 沒有錯誤的話，繼續原有的新增邏輯
+        // 生成 PAT-年份-隨機4位數字 格式的ID
+        var year = DateTime.Now.Year;
+        var randomNumber = Random.Shared.Next(1000, 9999);
+        draft.Id = $"PAT-{year}-{randomNumber}";
+        
+        // 根據性別設定照片
+        draft.AvatarUrl = draft.Gender?.ToLower() switch
+        {
+            "male" => "images/病人_1.png",
+            "female" => "images/病人_2.png",
+            _ => "images/病人_1.png" // 預設使用男性照片
+        };
+        
+        // 確保年齡已經設定
+        if (calculatedAge.HasValue)
+        {
+            draft.Age = calculatedAge.Value;
+        }
+        
+        // AppState.Patients.Add(draft);
+        
+        // 呼叫 Service → DB + 快取
+        await PatientsService.CreateAsync(new Patient {
+            Id = draft.Id,                 // 這裡 draft.Id 就是 PatientCode
+            Name = draft.Name,
+            DateOfBirth = draft.DateOfBirth,
+            Age = draft.Age,
+            Gender = draft.Gender,
+            BloodType = draft.BloodType,
+            Height = draft.Height,
+            Weight = draft.Weight,
+            AvatarUrl = draft.AvatarUrl
+        });
+
+        // 清空表單和錯誤訊息
+        draft = new();
+        calculatedAge = null;
+        errorMessages.Clear();
+        StateHasChanged();
+    }
+    */
+}

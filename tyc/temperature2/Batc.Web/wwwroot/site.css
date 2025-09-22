@@ -1,0 +1,113 @@
+.userchip {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  background: #fff;
+  padding: .5rem .75rem;
+  border-radius: 999px;
+  box-shadow: 0 6px 22px rgba(17, 24, 39, .08);
+}
+.userchip .avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  border: 1px solid #e5e7eb;
+}
+
+.userchip .meta {
+  line-height: 1.1
+}
+
+.userchip .alias {
+  font-weight: 600
+}
+
+.userchip .role {
+  font-size: .75rem;
+  color: #6b7280
+}
+
+.userchip .signout {
+  margin-left: .25rem;
+  border: 0;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: .8rem;
+}
+
+.userchip .signout:hover {
+  color: #ef4444
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .75rem 1rem;
+  background: rgba(255, 255, 255, .75);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.topbar .spacer {
+  flex: 1
+}
+
+.body {
+  padding: 1rem
+}
+
+.patients-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem
+}
+
+.patients-header .spacer {
+  flex: 1
+}
+
+.userbox{
+  display:flex;               /* 橫向排列 */
+  align-items:center;         /* 垂直置中 */
+  gap:.5rem;                  /* 圖與字的距離 */
+  white-space:nowrap;         /* 名字不換行（避免掉到下一行） */
+}
+
+.user-avatar{
+  width:30px;                 /* 可依需要 28~36px */
+  height:30px;
+  border-radius:50%;
+  object-fit:cover;
+  display:block;              /* 避免跟基線對齊造成上下跳動 */
+  border:1px solid #e5e7eb;
+}
+
+.alias{
+  font-weight:600;
+  color:#374151;
+  line-height:28px;              /* 讓文字垂直居中更貼合 */
+  transform:none; 
+}
+
+/* 只影響頂欄與 Patients 頁面右上角 */
+.topbar .userbox,
+.patients-header .userbox{
+  display:inline-flex;
+  align-items:center;     /* 兩者先垂直置中 */
+  gap:.5rem;
+}
+
+.topbar .userbox .alias,
+.patients-header .userbox .alias{
+  position:relative;
+  top:3px;
+}
