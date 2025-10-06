@@ -1,0 +1,478 @@
+﻿@page "/connect-device/{id}"
+@using System.Globalization
+@using Microsoft.AspNetCore.Components.Web
+@using Batc.Web.Models
+@inject Batc.Web.Services.AppState AppState
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+@using System.Linq
+@inject Batc.Web.Services.VisitLogService VisitLog
+
+<header class="topbar">
+  <div class="brand">
+    <img src="images/logo.png" alt="BATC" />
+    <span>BATC</span>
+    <button class="back-btn" title="Back" @onclick="GoBack">
+      <img src="images/back.png" alt="Back" />
+      <span>Back</span>
+    </button>
+  </div>
+
+  <div class="user-section">
+    <button class="icon-btn settings-btn" @onclick="ShowHelp">
+      <img src="images/setting.png" alt="Settings" width="20" height="20" />
+    </button>
+    <button class="icon-btn notification-btn">
+      <img src="images/notification.png" alt="Notifications" width="20" height="20" />
+    </button>
+
+    <div class="user">
+      <img src="images/醫生_1.png" alt="Dr. Wang" class="avatar" />
+      <span>Dr. Wang</span>
+    </div>
+
+    <button class="logout-btn" @onclick="Logout">Log out</button>
+  </div>
+</header>
+
+@if (showHelpModal)
+{
+    <div class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;" @onclick="HideHelp">
+        <div class="modal-content" style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);" @onclick:stopPropagation="true">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; color: #000 ;">使用說明</h3>
+                <button @onclick="HideHelp" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
+            </div>
+            
+            <div style="line-height: 1.2; color: #555;">
+                <p>• 點 Front/Back 圖片上 <strong>紅點</strong>選擇部位</p>
+                <p>   =>左側 Recent Visits 會新增「日期＋部位」。</p>
+                <p>• 按<b>Confirm：</b>會把座標與部位帶到 <code>連接設備與詳細詳細照射中心點</code>頁面。</p>
+                <p>• 按<b>Clean : </b> 可清除與重選部位。</p>
+         
+            </div>
+        </div>
+    </div>
+}
+
+@{
+    var p = (string.IsNullOrWhiteSpace(Id)
+                ? AppState.Patients?.FirstOrDefault()
+                : AppState.Patients?.FirstOrDefault(x => x.Id == Id))
+            ?? new Patient {
+                Name = "James Wilson", Id = "PAT-2023-1296", Age = 35, Gender = "Male",
+                BloodType = "A", Height = 178, Weight = 75, AvatarUrl = "images/病人_1.png"
+            };
+    var avatar = string.IsNullOrWhiteSpace(p.AvatarUrl) ? "images/病人_1.png" : p.AvatarUrl;
+}
+
+<main class="wrap">
+  <div class="grid">
+    <!-- 左側 -->
+    <section class="card">
+      <div class="header">Patient Details</div>
+      <div class="body">
+        <div class="p-info">
+            <!-- 應該要去讀取到資料庫(patient)顯示已經有加入資料的病人-->
+          <img class="p-avatar-img" src="@avatar" alt="@p.Name" />
+          <div>
+            <div class="p-name">@p.Name</div>
+            <div class="p-id">ID: @p.Id</div>
+          </div>
+        </div>
+
+        <div class="detail-grid">
+            <div><label>Age</label><span>@p.Age</span></div>
+            <div><label>Gender</label><span>@p.Gender</span></div>
+            <div><label>Blood Type</label><span>@p.BloodType</span></div>
+            <div><label>Height(cm)</label><span>@p.Height</span></div>
+            <div><label>Weight(kg)</label><span>@p.Weight</span></div>
+        </div>
+
+
+        <div class="visits">
+            <h4>Recent Visits</h4>
+            <ul>
+                @if (!VisitLog.Visits.Any())
+                {
+                    <li><span class="dot"></span><span>No records yet</span></li>
+                }
+                else
+                {
+                    @foreach (var v in VisitLog.Visits.OrderByDescending(v => v.Date))
+                    {
+                        <li>
+                            <span class="dot"></span>
+                            <span>@v.Date.ToString("MMM dd, yyyy") – @v.Label</span>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+        <div class="device-detal">
+            @{
+            var latest = VisitLog.Visits.OrderByDescending(x => x.Date).FirstOrDefault();
+        }
+        @foreach (var v in VisitLog.Visits.OrderByDescending(v => v.Date))
+        {
+            <h4>
+                <span class="dot"></span>
+                <span>
+                    @v.Date.ToString("MMM dd, yyyy") – @v.Label
+                    @if (v == latest && ConfirmedDotNo.HasValue)
+                    {
+                        <text> - @ConfirmedDotNo</text>
+                    }
+                </span>
+            </h4>
+        }
+
+            <div class="device-time">
+              <label class="time-label">Exposure Time (per session):</label>
+
+              <div class="time-controls">
+                <select class="time-select"
+                        @bind="SelectedPreset"
+                        @bind:after="OnPresetChanged">
+                  <option value="5">5 min</option>
+                  <option value="10">10 min</option>
+                  <option value="15">15 min</option>
+                  <option value="20">20 min</option>
+                  <option value="25">25 min</option>
+                  <option value="30">30 min</option>
+                  <option value="custom">Custom…</option>
+                </select>
+
+                <InputNumber @bind-Value="CustomTime"
+                             class="time-input"
+                             disabled="@(!IsCustom)"
+                             min="1" max="110" />
+                <span>min</span>
+              </div>
+
+              <div class="hint">目前設定：<b>@EffectiveTime</b> min</div>
+            </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 右側 -->
+    <section class="card-viz">
+      <div class="header">Body Visualization</div>
+      <div class="body">
+        <div class="zoom-frame"
+             @onmousemove="OnMove"
+             @onmouseup="EndDrag"
+             @onmouseleave="EndDrag"
+             @onclick="RefineCenter">
+          <!-- 這個容器仍然用你的 @ZoomStyle（通常包含 background-image / size） -->
+          <div class="zoom-img" style="@ZoomStyle">
+            @if (CurrentDots?.Any() == true)
+            {
+                @foreach (var item in CurrentDots.Select((p, i) => new { p, i }))
+                {
+                    var idx = item.i + 1;
+                    <div class="dot" style="left:@(item.p.X*100)%; top:@(item.p.Y*100)%;">
+                        <button type="button"
+                                class="dot-btn @(SelectedDotNo==idx ? "is-selected" : null)"
+                                @onclick="() => SelectDot(idx, item.p)">
+                        </button>
+                        <span class="dot-badge">@idx</span>
+                    </div>
+                }
+
+            }
+          </div>
+        </div>
+
+        <div class="toolbar" style="justify-content:flex-end">
+          <button class="btn-primary" @onclick="Finish">Confirm</button>
+        </div>
+      </div>
+    </section>
+
+
+     <!-- 右：Waveform -->
+    <section class="card-waveform">
+      <div class="header">Waveform</div>
+      <div class="body">
+        <div class="wf-block">
+          <div class="wf-title">EEG Waveform - CZ</div>
+          <div class="wf-row">
+            <div class="wf-chart"></div>
+            <div class="wf-knobs">
+              <div class="knob">
+                <div class="num">MAX</div>
+                <input type="text" value="50" />
+                <div class="num">MIN</div>
+                <input type="text" value="-50" />
+              </div>
+            </div>
+           </div>
+
+          <div class="wf-title">EEG Waveform - FZ</div>
+          <div class="wf-row">
+            <div class="wf-chart"></div>
+            <div class="wf-knobs">
+              <div class="knob">
+                <div class="num">MAX</div>
+                <input type="text" value="50" />
+                <div class="num">MIN</div>
+                <input type="text" value="-50" />
+              </div>
+            </div>
+           </div>
+           <button class="btn">SETTING</button>
+         </div>
+
+
+         <div class="wf-controls">
+           <select class="port">
+             <option>USB COMB4</option>
+           </select>
+           <button type="button" class="search" @onclick="Search" aria-label="Search">
+              <img src="/images/search.png" alt="" width="20" height="20" />
+           </button>
+           <button class="btn" title="Connect">CONNECT</button>
+         </div>
+         <div class="status">COM Status : Recording <span style="color:#16a34a;margin-top: 20px;">●</span></div>
+         <div class="start-action"> 
+           <button class="btn-primary" @onclick="Start" >Start</button>
+         </div>
+       </div>
+     </section>
+   </div>
+</main>
+
+
+@code {
+  // ---------- Query 參數與頁面參數 ----------
+  [Parameter] public string? Id { get; set; }
+  private Patient? patient;
+
+  [SupplyParameterFromQuery(Name="x")]     public double? qx { get; set; }
+  [SupplyParameterFromQuery(Name="y")]     public double? qy { get; set; }
+  [SupplyParameterFromQuery(Name="front")] public int?    qFront { get; set; }
+
+  [SupplyParameterFromQuery(Name="label")] public string? qLabel { get; set; }
+
+  // ---------- UI 狀態 ----------
+  private bool showHelpModal = false;
+  private record DotPoint(double X, double Y);
+  private List<DotPoint> CurrentDots = new();
+  private int? SelectedDotNo;      // 剛剛點到的紅點編號（1-based）
+  private int? ConfirmedDotNo;     // 按下 START 後確定的編號
+  private DotPoint? SelectedDotPt; //（可選）被選到點的座標
+  private void Logout()  => Nav.NavigateTo("/");
+  private void Search()  => Nav.NavigateTo("/");
+  private void Start()  => Nav.NavigateTo("/perdicts"); 
+
+  private void ShowHelp()
+{
+    showHelpModal = true;
+}
+
+private void HideHelp()
+{
+    showHelpModal = false;
+}
+  // 最近紀錄/清理用到的欄位
+  private readonly List<Visit> visits = new();
+
+  // ---------- 病人資料（如果要用變數綁 UI）----------
+
+  // ---------- 視覺化用常數/欄位 ----------
+  private const double ImgW = 280, ImgH = 380;
+  private const int FrameW = 360, FrameH = 360;
+  private double scale = 2.0;
+
+  private const int RedW = 64,RedH = 64;
+  private const double RedTipYRatio = 0.78;
+  private double RedTipY => RedH * RedTipYRatio;
+
+  private double cx, cy;         // 中心 (原圖座標)
+  private double redX, redY;     // 紅點
+  private bool dragging;
+
+  private bool usingRegion;
+  private string? zoomImagePath;
+
+  // 注意：這兩個 Dictionary 一定要在 @code 裡，否則會出現 RZ9980
+  private sealed class StringTupleComparer : IEqualityComparer<(string Label, bool Front)>
+{
+    public static readonly StringTupleComparer Instance = new();
+    public bool Equals((string Label, bool Front) x, (string Label, bool Front) y) =>
+        x.Front == y.Front && string.Equals(x.Label, y.Label, StringComparison.OrdinalIgnoreCase);
+    public int GetHashCode((string Label, bool Front) obj) =>
+        HashCode.Combine(obj.Front, StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Label ?? ""));
+}
+
+// ★ 在這裡為每個「部位 × 面向」填你要的紅點（示例先放幾組）
+private static readonly Dictionary<(string Label, bool Front), List<DotPoint>> DotMap
+    = new(StringTupleComparer.Instance)
+{
+    // Front
+    { ("left shoulder",  true), new() { new(0.455,0.245), new(0.59,0.5), new(0.805,0.25) } },
+    { ("right shoulder", true), new() { new(0.21,0.221), new(0.442,0.492), new(0.6599,0.23) } },
+    { ("left upper arm", true), new() {new(0.545,0.229),new(0.3,0.4989), new(0.371,0.7174), new(0.563,0.7954), new(0.494,0.624), new(0.693,0.3624)  } },
+    { ("right upper arm",true), new() {new(0.44,0.207),new(0.729,0.46), new(0.658,0.704), new(0.44,0.849), new(0.567,0.547), new(0.34,0.378)  } },
+    { ("left knee",      true), new() { new(0.228,0.298),new(0.168,0.82),new(0.564,0.26), new(0.456,0.558), new(0.476,0.8828), new(0.798,0.451), new(0.724,0.882) } },
+    { ("right knee",     true), new() { new(0.16,0.38),new(0.26,0.852),new(0.418,0.197), new(0.492,0.558), new(0.525,0.88), new(0.72,0.22), new(0.854,0.876) } },
+    { ("left ankle",     true), new() { new(0.269,0.2),new(0.218,0.63),new(0.549,0.165), new(0.461,0.41), new(0.442,0.7), new(0.763,0.318), new(0.682,0.691) } },
+    { ("right ankle",    true), new() { new(0.256,0.282),new(0.336,0.67),new(0.464,0.132), new(0.528,0.424), new(0.548,0.692), new(0.71,0.153), new(0.823,0.689) } },
+
+    // Back
+    { ("upper back",     false), new() { new(0.26,0.442), new(0.268,0.752), new(0.486,0.358),new(0.486,0.62), new(0.70,0.442), new(0.70,0.75) } },
+    { ("mid back",       false), new() { new(0.24,0.46), new(0.498,0.304), new(0.498,0.541), new(0.732,0.466) } },
+};
+  private static readonly Dictionary<string,string> RegionMapFront = new(StringComparer.OrdinalIgnoreCase) {
+    ["left shoulder"]   = "images/new-left-shoulder.png",
+    ["right shoulder"]  = "images/new-right-shoulder.png",
+    ["left upper arm"]  = "images/new-left-upper-arm.png",
+    ["right upper arm"] = "images/new-right-upper-arm.png",
+    ["left knee"]       = "images/new-left-knee.png",
+    ["right knee"]      = "images/new-right-knee.png",
+    ["left ankle"]      = "images/new-left-ankle.png",
+    ["right ankle"]     = "images/new-right-ankle.png",
+  };
+  private static readonly Dictionary<string,string> RegionMapBack = new(StringComparer.OrdinalIgnoreCase) {
+    ["upper back"]      = "images/new-upper-back.png",
+    ["mid back"]        = "images/new-mid-back.png",
+  };
+
+  // 顯示樣式
+  protected string ZoomStyle {
+    get {
+      if (usingRegion && !string.IsNullOrEmpty(zoomImagePath))
+        return $"width:{FrameW}px;height:{FrameH}px;background-image:url('{zoomImagePath}');background-repeat:no-repeat;background-size:contain;background-position:center center;";
+      var bgW = ImgW * scale; var bgH = ImgH * scale;
+      var posX = -(cx * scale - FrameW / 2.0);
+      var posY = -(cy * scale - FrameH / 2.0);
+      return $"width:{FrameW}px;height:{FrameH}px;background-image:url('images/body.png');background-repeat:no-repeat;background-size:{bgW}px {bgH}px;background-position:{posX:F1}px {posY:F1}px;";
+    }
+  }
+    @code {
+protected override void OnInitialized()
+{
+    VisitLog.OnChange += StateHasChanged;
+
+}
+
+public void Dispose()
+{
+    VisitLog.OnChange -= StateHasChanged;
+    
+}
+}
+  protected double CenterX => FrameW / 2.0;
+  protected double CenterY => FrameH / 2.0;
+  protected double RedScreenX => usingRegion ? CenterX : (redX * scale - (cx * scale - FrameW / 2.0));
+  protected double RedScreenY => usingRegion ? CenterY : (redY * scale - (cy * scale - FrameW / 2.0));
+
+  // 用不同名稱避免與 qLabel 衝突
+  private string labelText = string.Empty;
+  private bool isFront;
+
+  // ---------- 只留「一個」 OnParametersSet，統一初始化 ----------
+  protected override void OnParametersSet()
+{
+    // 病人
+    patient = string.IsNullOrWhiteSpace(Id)
+      ? AppState.Patients?.FirstOrDefault()
+      : AppState.Patients?.FirstOrDefault(p => p.Id == Id);
+
+    // Query 參數 → 頁面欄位
+    isFront   = (qFront ?? 1) == 1;
+    labelText = qLabel ?? string.Empty;
+
+    // 視覺化初始化
+    var map = isFront ? RegionMapFront : RegionMapBack;
+    usingRegion = !string.IsNullOrWhiteSpace(labelText) && map.TryGetValue(labelText, out zoomImagePath);
+
+    if (usingRegion)
+    {
+        redX = ImgW / 2; redY = ImgH / 2;
+        cx = redX; cy = redY;
+    }
+    else
+    {
+        cx   = Math.Clamp((qx ?? 0.5) * ImgW, 0, ImgW);
+        cy   = Math.Clamp((qy ?? 0.5) * ImgH, 0, ImgH);
+        redX = cx; redY = cy;
+    }
+
+    // 回填到跨頁狀態（讓返回/跳轉後 Clean/Confirm 仍可用）
+    // var xNorm = (ImgW > 0) ? cx / ImgW : 0.5;
+    // var yNorm = (ImgH > 0) ? cy / ImgH : 0.5;
+    if (!string.IsNullOrWhiteSpace(labelText)
+        && DotMap.TryGetValue((labelText, isFront), out var dots))
+        CurrentDots = dots;
+    else
+        CurrentDots = new();
+
+}
+
+     private void GoBack()  =>   Nav.NavigateTo($"/confirm/{Uri.EscapeDataString(Id ?? "")}");
+  // ---------- 互動處理 ----------
+  private void RefineCenter(MouseEventArgs e)
+  {
+    if (usingRegion) return;
+    var px = (e.OffsetX - FrameW / 2.0) / scale + cx;
+    var py = (e.OffsetY - FrameH / 2.0) / scale + cy;
+    cx = Math.Clamp(px, 0, ImgW);
+    cy = Math.Clamp(py, 0, ImgH);
+  }
+
+  private void StartDrag(MouseEventArgs e) => dragging = true;
+  private void EndDrag() => dragging = false;
+
+  private void OnMove(MouseEventArgs e)
+  {
+    if (!dragging) return;
+    if (usingRegion)
+    {
+      redX = ImgW * e.OffsetX / FrameW;
+      redY = ImgH * e.OffsetY / FrameH;
+    }
+    else
+    {
+      var px = (e.OffsetX - FrameW / 2.0) / scale + cx;
+      var py = (e.OffsetY - FrameH / 2.0) / scale + cy;
+      redX = Math.Clamp(px, 0, ImgW);
+      redY = Math.Clamp(py, 0, ImgH);
+    }
+  }
+  private void SelectDot(int index, DotPoint p)
+{
+    SelectedDotNo = index;
+    SelectedDotPt = p;
+    StateHasChanged();
+}
+  private void Finish()
+  {
+    ConfirmedDotNo = SelectedDotNo; 
+    var nx = redX / ImgW; var ny = redY / ImgH;
+    Console.WriteLine($"final target: x={nx:F4}, y={ny:F4}, label={labelText}");
+    // TODO: 後續處理（例如 API 呼叫）
+  }
+
+  // 小型 record/class
+  // private record P(double X, double Y, string Label);
+  private class Visit { public string Label { get; set; } = ""; public DateTime Date { get; set; } }
+
+
+  // private DateTime DisplayDate = DateTime.Now;
+
+    // ▼ 時間選擇器
+  private string SelectedPreset { get; set; } = "15";
+  private int? CustomTime { get; set; }
+  private bool IsCustom => SelectedPreset == "custom";
+  private int EffectiveTime => IsCustom ? (CustomTime ?? 0) : int.Parse(SelectedPreset);
+
+  private void OnPresetChanged()
+  {
+    if (!IsCustom) CustomTime = null;
+    StateHasChanged();
+  }
+}

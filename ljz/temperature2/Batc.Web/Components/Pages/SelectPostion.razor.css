@@ -145,18 +145,21 @@ body {
 .wrap {
 	max-width: 1500px;
 	margin: 24px auto;
-	padding: 0 20px
+	padding: 0 20px;
+	max-height:1000px;
 }
 
 .grid {
 	display: grid;
 	grid-template-columns: 360px 1fr;
-	gap: 22px
+	gap: 22px;
+	max-height:1000px;
 }
 
 .card {
 	border: 2px solid #D1D1D1;
 	border-radius: 16px;
+	height:780px;
 }
 
 .card .header {
@@ -224,31 +227,51 @@ body {
 }
 
 .visits {
-	padding: 10px 0px 14px 0px;
+	display: flex;
+	flex-direction: column; 
+	align-items: flex-start; 
+	width: 350px; 
+	padding: 10px 0 14px 0;
 }
 
-h4{
+.visits h4 {
 	color: #111827;
 	font-size: 20px;
 	font-weight: 600;
+	margin-bottom: 15px; 
 }
 
-.visits .ul {
+.visits ul {
+	list-style: disc; 
+	padding-left: 20px; 
+	margin: 0;
+	width: 100%;
+	font-size: 15px;
+}
+
+.visits li {
 	color: #111827;
-	font-size: 12px;
-	font-weight: 300;
+	font-size: 15px;
+	font-weight: 400;
+	margin-bottom: 4px;
+	line-height: 1.5;
+}
+.visits .dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background-color: #111827;
 }
 
-.visits .li {
-	color: #111827;
-	font-size: 12px;
-	font-weight: 300;
+.device-detal {
+	gap: 10px 40px;
+	border-bottom: 3px solid #D1D1D1;
 }
-
 .card viz {
 	border: 2px solid #D1D1D1;
 	font-size: 20px;
 	border-radius: 16px;
+	height:780px;
 }
 
 .card viz .header {
@@ -259,7 +282,7 @@ h4{
 
 .stage {
 	width: 100%;
-	height: 480px;
+	height: 600px;
 	border: 1px solid var(--line);
 	border-radius: 16px;
 	background: #fff;
@@ -295,7 +318,8 @@ h4{
 	object-fit: contain;
 	display: block;
 	user-select: none;
-	-webkit-user-drag: none
+	-webkit-user-drag: none;
+	border-top:100px;
 }
 
 .image-canvas .dot {
@@ -325,19 +349,20 @@ h4{
 	display: flex;
 	justify-content: flex-end;
 	gap: 30px;
-	margin-top: 25px;
 	padding-right: 20px;
 }
 
 .btn.clean {
 	height: 40px;
 	width: 100px;
-	padding: 0 10px;
+	padding: 0px 10px;
 	border-radius: 10px;
 	border: 2px solid #A6A6A6;
 	background: #fff;
 	font-weight: 600;
 	cursor: pointer;
+
+
 }
 
 .btn.confirm {
@@ -349,6 +374,16 @@ h4{
 	background: #fff;
 	font-weight: 600;
 	cursor: pointer;
+}
+/* 你的 ConnectDevice 或 SelectPostion 專屬 css 檔加上 */
+button.clean:focus,
+button.clean:active,
+button.clean:focus-visible,
+button.confirm:focus,
+button.confirm:active,
+button.confirm:focus-visible {
+	outline: none !important;
+	box-shadow: none !important; /* 若你用的是 Bootstrap 需移除它的藍色陰影 */
 }
 
 @media (max-width:980px) {

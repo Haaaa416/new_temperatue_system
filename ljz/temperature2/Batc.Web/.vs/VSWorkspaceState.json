@@ -4,10 +4,10 @@
     "\\Components",
     "\\Components\\Pages",
     "\\Models",
+    "\\obj",
     "\\Services",
-    "\\wwwroot",
-    "\\wwwroot\\images"
+    "\\wwwroot"
   ],
-  "SelectedNode": "\\Components\\Pages\\Register.razor.css",
+  "SelectedNode": "\\Components\\Pages\\ConnectDevice.razor",
   "PreviewInSolutionExplorer": false
 }

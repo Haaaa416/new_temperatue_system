@@ -4,6 +4,7 @@
 @using Batc.Web.Models
 @inject Batc.Web.Services.AppState AppState
 @inject NavigationManager Nav
+@inject Batc.Web.Services.VisitLogService VisitLog
 @rendermode InteractiveServer
 
 <header class="topbar">
@@ -17,7 +18,7 @@
   </div>
 
   <div class="user-section">
-    <button class="icon-btn settings-btn" @onclick="ToggleHelp">
+    <button class="icon-btn settings-btn" @onclick="ShowHelp">
       <img src="images/setting.png" alt="Settings" width="20" height="20" />
     </button>
     <button class="icon-btn notification-btn">
@@ -33,20 +34,26 @@
   </div>
 </header>
 
-@if (showHelp)
+@if (showHelpModal)
 {
-  <div class="modal" @onclick="ToggleHelp">
-    <div class="modal-card" @onclick:stopPropagation="true">
-      <div class="modal-head">
-        <strong>使用說明</strong>
-        <button class="x" @onclick="ToggleHelp">×</button>
-      </div>
-      <div class="modal-body">
-        <p>點 Front/Back 的<strong>紅點</strong>選擇部位，左側 Recent Visits 會新增「日期＋部位」。</p>
-        <p>按 <b>Confirm</b> 會把座標與部位帶到 <code>/prediction</code>；<b>Clean</b> 可清除與重選。</p>
-      </div>
+    <div class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;" @onclick="HideHelp">
+        <div class="modal-content" style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);" @onclick:stopPropagation="true">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; color: #000 ;">使用說明</h3>
+                <button @onclick="HideHelp" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
+            </div>
+            
+            <div style="line-height: 1.2; color: #555;">
+                <p>• 點 Front/Back 圖片上 <strong>紅點</strong>選擇部位</p>
+                <p>   =>左側 Recent Visits 會新增「日期＋部位」。</p>
+                <p>• 按<b>Confirm：</b>會把座標與部位帶到 <code>連接設備與詳細詳細照射中心點</code>頁面。</p>
+                <p>• 按<b>Clean : </b> 可清除與重選部位。</p>
+         
+                
+         
+            </div>
+        </div>
     </div>
-  </div>
 }
 
 @{
@@ -84,22 +91,25 @@
         </div>
 
 
-        <div class="visits">
+        <div class="visits"> 
           <h4>Recent Visits</h4>
           <ul>
-            @if (visits.Count == 0)
+            @if (!VisitLog.Visits.Any())
             {
-              <li><span class="dot"></span><span>No records yet</span></li>
+                <li><span class="dot"></span><span>No records yet</span></li>
             }
             else
             {
-              @foreach (var v in visits.OrderByDescending(v => v.Date))
-              {
-                <li><span class="dot"></span><span>@v.Date.ToString("MMM dd, yyyy") – @v.Label</span></li>
-              }
+                @foreach (var v in VisitLog.Visits.OrderByDescending(v => v.Date))
+                {
+                    <li><span class="dot"></span>
+                        <span>@v.Date.ToString("MMM dd, yyyy") – @v.Label</span>
+                    </li>
+                }
             }
           </ul>
         </div>
+
       </div>
     </section>
 
@@ -149,14 +159,13 @@
           <div class="toolbar-left"></div>
           <div class="toolbar-right" style="display:flex;gap:10px;">
             <button class="btn clean " @onclick="Clean" disabled="@(!selectionLocked)">Clean</button>
-            <button class="btn confirm" @onclick="Confirm" disabled="@(!lastPoint.HasValue)">Confirm</button>
+            <button class="btn confirm" @onclick="Confirm" disabled="@(!selectionLocked)">Confirm</button>
           </div>
         </div>
       </div>
     </section>
   </div>
 </main>
-
 @code {
   [Parameter] public string? Id { get; set; }
   private Patient? patient;
@@ -167,11 +176,19 @@
     }
 
   // UI
-  private bool showHelp;
-  private void ToggleHelp() => showHelp = !showHelp;
-  private void GoBack() => Nav.NavigateTo("/patients");
+  private bool showHelpModal = false;
+  private void GoBack() => Nav.NavigateTo($"/patient/{Uri.EscapeDataString(Id ?? "")}");
   private void Logout() => Nav.NavigateTo("/");
 
+  private void ShowHelp()
+{
+    showHelpModal = true;
+}
+
+private void HideHelp()
+{
+    showHelpModal = false;
+}
   // 畫布基準
   private const double CanvasW = 280, CanvasH = 380;
   private const double DotR = 7;
@@ -241,14 +258,53 @@
     lastVisitIndex = null;
     lastVisitLabel = null;
   }
+ 
+protected override void OnInitialized()
+    {
+        // 任何頁面新增紀錄，這裡會即時刷新
+        VisitLog.OnChange += StateHasChanged;
+    }
 
-  private void Confirm()
-  {
+    public void Dispose()
+    {
+        VisitLog.OnChange -= StateHasChanged;
+    }
+   
+
+private void OnDotClick(double nx, double ny, bool front, string label)
+{
+    lastPoint = (nx, ny, front);
+    lastVisitLabel = label?.Trim();
+
+    if (!string.IsNullOrWhiteSpace(lastVisitLabel))
+        VisitLog.Add(lastVisitLabel!, DateTime.Now);
+
+    StateHasChanged(); // 讓左邊清單立刻更新
+}
+
+
+ private void Confirm()
+{
     if (!lastPoint.HasValue) return;
+
     var (nx, ny, front) = lastPoint.Value;
-    var lab = Uri.EscapeDataString(lastVisitLabel ?? "");
-    Nav.NavigateTo($"/device?x={nx:F4}&y={ny:F4}&front={(front ? "1" : "0")}&label={lab}");
-  }
+    var rawLabel = (lastVisitLabel ?? "").Trim();
+
+    // 寫進共用服務，讓其他頁能看到
+    if (!string.IsNullOrEmpty(rawLabel))
+    {
+        // 若你已在「點紅點」時寫入 VisitLog，這裡就不用再 Add，避免重複
+        var last = VisitLog.Visits.LastOrDefault();
+        if (last == null || !string.Equals(last.Label, rawLabel, StringComparison.Ordinal))
+            VisitLog.Add(rawLabel, DateTime.Now);
+    }
+
+    var lab = Uri.EscapeDataString(rawLabel);
+    var pid = Uri.EscapeDataString(Id ?? "");
+
+    // ✅ 把 id 放在路由，其他參數用 QueryString
+    Nav.NavigateTo($"/connect-device/{pid}?label={lab}&front={(front ? 1 : 0)}&x={nx:F4}&y={ny:F4}");
+}
 
   private record P(double X, double Y, string Label);
   private class Visit { public string Label { get; set; } = ""; public DateTime Date { get; set; } }

@@ -1,5 +1,5 @@
-using Batc.Web.Components;
-using Batc.Web.Services;   // ¡ö ·s¼W¡GAppState ªº©R¦WªÅ¶¡
+ï»¿using Batc.Web.Components;
+using Batc.Web.Services;   // AppStateã€VisitLogService çš„å‘½åç©ºé–“
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,10 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// ¥ş°ìª¬ºA¡]¯f±w²M³æ¡^
-// ¥Î Singleton Åı¾ã­Ó¯¸¥x¦@¥Î¦P¤@¥÷°O¾ĞÅé¤¤ªº¸ê®Æ
+// å…¨åŸŸç‹€æ…‹ï¼ˆç—…æ‚£æ¸…å–®ï¼‰
 builder.Services.AddSingleton<AppState>();
 
+// âœ… åœ¨ Build ä¹‹å‰è¨»å†Šä½ çš„ VisitLogServiceï¼ˆBlazor Server ç”¨ Scopedï¼‰
+builder.Services.AddScoped<VisitLogService>();
+
+builder.Services.AddScoped<PositionSelectionState>();
+// é€™è¡Œè¦åœ¨æ‰€æœ‰ AddXXX å¾Œé¢
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,7 +27,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAntiforgery();
 
-app.MapStaticAssets(); // wwwroot ¤Uªº images¡Bcss ·|±q³o¸Ì´£¨Ñ
+app.MapStaticAssets(); // wwwroot ä¸‹çš„ imagesã€css æœƒå¾é€™è£¡æä¾›
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
