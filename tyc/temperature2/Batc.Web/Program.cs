@@ -15,6 +15,10 @@ builder.Services.AddRazorComponents()
 // �� Singleton ����ӯ��x�@�ΦP�@���O���餤�����
 builder.Services.AddSingleton<AppState>();
 
+builder.Services.AddScoped<VisitLogService>();
+
+builder.Services.AddScoped<PositionSelectionState>();
+
 // Razor Components
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 

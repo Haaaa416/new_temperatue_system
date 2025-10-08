@@ -8,6 +8,6 @@
     "\\wwwroot",
     "\\wwwroot\\images"
   ],
-  "SelectedNode": "\\Components\\Pages\\Register.razor.css",
+  "SelectedNode": "\\Services\\AppState.cs",
   "PreviewInSolutionExplorer": false
 }
