@@ -45,10 +45,14 @@
             </div>
             
             <div style="line-height: 1.2; color: #555;">
-                <p>• 點 Front/Back 圖片上 <strong>紅點</strong>選擇部位</p>
-                <p>   =>左側 Recent Visits 會新增「日期＋部位」。</p>
-                <p>• 按<b>Confirm：</b>會把座標與部位帶到 <code>連接設備與詳細詳細照射中心點</code>頁面。</p>
-                <p>• 按<b>Clean : </b> 可清除與重選部位。</p>
+                <p>• 從上一個頁面點擊需要照射的部位後，在左框可以見到照射部位</p>
+                <p>     名詞以及日期</p>
+                <p>• 中間框:根據對應的部位出現對應細部照射中心點</p>
+                <p>• 點擊<strong>紅點</strong>後按下 confirm ，即可在左框顯示詳細照射中心點位置</p>
+                <p>• 最右邊波形圖連接方式為如下 : </p>
+                <p>• 腦波點位貼好接上腦波儀->腦波儀開機->藍芽接收器接上電腦-></p>
+                <p>     藍芽連接(點擊)->閃紅黃燈(腦波儀)->頁面尋找接收器名稱</p>
+                <p>     ->connect->跑出波形圖</p>
          
             </div>
         </div>
@@ -204,9 +208,9 @@
             <div class="wf-knobs">
               <div class="knob">
                 <div class="num">MAX</div>
-                <input type="text" value="50" />
-                <div class="num">MIN</div>
-                <input type="text" value="-50" />
+                    <input type="number" id="max-cz" value="500" />
+                    <div class="num">MIN</div>
+                    <input type="number" id="min-cz" value="-500" />
               </div>
             </div>
            </div>
@@ -217,9 +221,9 @@
             <div class="wf-knobs">
               <div class="knob">
                 <div class="num">MAX</div>
-                <input type="text" value="50" />
-                <div class="num">MIN</div>
-                <input type="text" value="-50" />
+                    <input type="number" id="max-cz" value="500" />
+                    <div class="num">MIN</div>
+                    <input type="number" id="min-cz" value="-500" />
               </div>
             </div>
            </div>

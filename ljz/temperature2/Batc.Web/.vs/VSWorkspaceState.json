@@ -6,7 +6,8 @@
     "\\Models",
     "\\obj",
     "\\Services",
-    "\\wwwroot"
+    "\\wwwroot",
+    "\\wwwroot\\images"
   ],
   "SelectedNode": "\\Components\\Pages\\ConnectDevice.razor",
   "PreviewInSolutionExplorer": false

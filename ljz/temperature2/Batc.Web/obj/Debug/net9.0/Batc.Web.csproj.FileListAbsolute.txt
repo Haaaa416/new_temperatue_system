@@ -248,5 +248,5 @@ C:\Users\user\temperature\Batc.Web\obj\Debug\net9.0\Batc.Web.genruntimeconfig.ca
 C:\Users\user\temperature\Batc.Web\obj\Debug\net9.0\ref\Batc.Web.dll
 C:\Users\user\temperature\Batc.Web\obj\Debug\net9.0\scopedcss\Components\Pages\StartPrediction.razor.rz.scp.css
 C:\Users\user\temperature\Batc.Web\obj\Debug\net9.0\scopedcss\Components\Pages\ConnectDevice.razor.rz.scp.css
-C:\Users\user\temperature\Batc.Web\obj\Debug\net9.0\compressed\wq84ar6wi1-02n12avc8t.gz
-C:\Users\user\temperature\Batc.Web\obj\Debug\net9.0\compressed\gld9z0gk4p-02n12avc8t.gz
+C:\Users\user\temperature\Batc.Web\obj\Debug\net9.0\compressed\wq84ar6wi1-z88tnil24l.gz
+C:\Users\user\temperature\Batc.Web\obj\Debug\net9.0\compressed\gld9z0gk4p-z88tnil24l.gz
