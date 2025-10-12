@@ -1,0 +1,732 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Batc.Web/1.0.0": {
+        "dependencies": {
+          "LiveChartsCore.SkiaSharpView.Blazor": "2.0.0-rc6.1",
+          "MathNet.Numerics": "5.0.0",
+          "System.IO.Ports": "9.0.9"
+        },
+        "runtime": {
+          "Batc.Web.dll": {}
+        }
+      },
+      "HarfBuzzSharp/7.3.0.3": {
+        "dependencies": {
+          "HarfBuzzSharp.NativeAssets.Win32": "7.3.0.3",
+          "HarfBuzzSharp.NativeAssets.macOS": "7.3.0.3"
+        },
+        "runtime": {
+          "lib/net6.0/HarfBuzzSharp.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "7.3.0.3"
+          }
+        }
+      },
+      "HarfBuzzSharp.NativeAssets.macOS/7.3.0.3": {
+        "runtimeTargets": {
+          "runtimes/osx/native/libHarfBuzzSharp.dylib": {
+            "rid": "osx",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "HarfBuzzSharp.NativeAssets.WebAssembly/8.3.1.1": {},
+      "HarfBuzzSharp.NativeAssets.Win32/7.3.0.3": {
+        "runtimeTargets": {
+          "runtimes/win-arm64/native/libHarfBuzzSharp.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libHarfBuzzSharp.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x86/native/libHarfBuzzSharp.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "LiveChartsCore/2.0.0-rc6.1": {
+        "runtime": {
+          "lib/net8.0/LiveChartsCore.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        }
+      },
+      "LiveChartsCore.SkiaSharpView/2.0.0-rc6.1": {
+        "dependencies": {
+          "LiveChartsCore": "2.0.0-rc6.1",
+          "SkiaSharp": "3.119.0",
+          "SkiaSharp.HarfBuzz": "2.88.9"
+        },
+        "runtime": {
+          "lib/net8.0/LiveChartsCore.SkiaSharpView.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        }
+      },
+      "LiveChartsCore.SkiaSharpView.Blazor/2.0.0-rc6.1": {
+        "dependencies": {
+          "HarfBuzzSharp.NativeAssets.WebAssembly": "8.3.1.1",
+          "LiveChartsCore": "2.0.0-rc6.1",
+          "LiveChartsCore.SkiaSharpView": "2.0.0-rc6.1",
+          "SkiaSharp.Views.Blazor": "3.119.0"
+        },
+        "runtime": {
+          "lib/net8.0/LiveChartsCore.SkiaSharpView.Blazor.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        }
+      },
+      "MathNet.Numerics/5.0.0": {
+        "runtime": {
+          "lib/net6.0/MathNet.Numerics.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authorization/8.0.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Metadata": "8.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Options": "8.0.0"
+        }
+      },
+      "Microsoft.AspNetCore.Components/8.0.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Authorization": "8.0.0",
+          "Microsoft.AspNetCore.Components.Analyzers": "8.0.0"
+        }
+      },
+      "Microsoft.AspNetCore.Components.Analyzers/8.0.0": {},
+      "Microsoft.AspNetCore.Components.Forms/8.0.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components": "8.0.0"
+        }
+      },
+      "Microsoft.AspNetCore.Components.Web/8.0.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components": "8.0.0",
+          "Microsoft.AspNetCore.Components.Forms": "8.0.0",
+          "Microsoft.Extensions.DependencyInjection": "8.0.0",
+          "Microsoft.Extensions.Primitives": "8.0.0",
+          "Microsoft.JSInterop": "8.0.0",
+          "System.IO.Pipelines": "8.0.0"
+        }
+      },
+      "Microsoft.AspNetCore.Metadata/8.0.0": {},
+      "Microsoft.Extensions.DependencyInjection/8.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/8.0.0": {},
+      "Microsoft.Extensions.Logging.Abstractions/8.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.Options/8.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Primitives": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.Primitives/8.0.0": {},
+      "Microsoft.JSInterop/8.0.0": {},
+      "runtime.android-arm.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/android-arm/native/libSystem.IO.Ports.Native.so": {
+            "rid": "android-arm",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.android-arm64.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/android-arm64/native/libSystem.IO.Ports.Native.so": {
+            "rid": "android-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.android-x64.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/android-x64/native/libSystem.IO.Ports.Native.so": {
+            "rid": "android-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.android-x86.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/android-x86/native/libSystem.IO.Ports.Native.so": {
+            "rid": "android-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.linux-arm.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/linux-arm/native/libSystem.IO.Ports.Native.so": {
+            "rid": "linux-arm",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.linux-arm64.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/linux-arm64/native/libSystem.IO.Ports.Native.so": {
+            "rid": "linux-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.linux-bionic-arm64.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/linux-bionic-arm64/native/libSystem.IO.Ports.Native.so": {
+            "rid": "linux-bionic-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.linux-bionic-x64.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/linux-bionic-x64/native/libSystem.IO.Ports.Native.so": {
+            "rid": "linux-bionic-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.linux-musl-arm.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/linux-musl-arm/native/libSystem.IO.Ports.Native.so": {
+            "rid": "linux-musl-arm",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.linux-musl-arm64.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/linux-musl-arm64/native/libSystem.IO.Ports.Native.so": {
+            "rid": "linux-musl-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.linux-musl-x64.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/linux-musl-x64/native/libSystem.IO.Ports.Native.so": {
+            "rid": "linux-musl-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.linux-x64.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/libSystem.IO.Ports.Native.so": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.maccatalyst-arm64.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/maccatalyst-arm64/native/libSystem.IO.Ports.Native.dylib": {
+            "rid": "maccatalyst-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.maccatalyst-x64.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/maccatalyst-x64/native/libSystem.IO.Ports.Native.dylib": {
+            "rid": "maccatalyst-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.native.System.IO.Ports/9.0.9": {
+        "dependencies": {
+          "runtime.android-arm.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.android-arm64.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.android-x64.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.android-x86.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.linux-arm.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.linux-arm64.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.linux-bionic-arm64.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.linux-bionic-x64.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.linux-musl-arm.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.linux-musl-arm64.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.linux-musl-x64.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.linux-x64.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.maccatalyst-arm64.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.maccatalyst-x64.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.osx-arm64.runtime.native.System.IO.Ports": "9.0.9",
+          "runtime.osx-x64.runtime.native.System.IO.Ports": "9.0.9"
+        }
+      },
+      "runtime.osx-arm64.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/osx-arm64/native/libSystem.IO.Ports.Native.dylib": {
+            "rid": "osx-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "runtime.osx-x64.runtime.native.System.IO.Ports/9.0.9": {
+        "runtimeTargets": {
+          "runtimes/osx-x64/native/libSystem.IO.Ports.Native.dylib": {
+            "rid": "osx-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "SkiaSharp/3.119.0": {
+        "dependencies": {
+          "SkiaSharp.NativeAssets.Win32": "3.119.0",
+          "SkiaSharp.NativeAssets.macOS": "3.119.0"
+        },
+        "runtime": {
+          "lib/net8.0/SkiaSharp.dll": {
+            "assemblyVersion": "3.119.0.0",
+            "fileVersion": "3.119.0.0"
+          }
+        }
+      },
+      "SkiaSharp.HarfBuzz/2.88.9": {
+        "dependencies": {
+          "HarfBuzzSharp": "7.3.0.3",
+          "SkiaSharp": "3.119.0"
+        },
+        "runtime": {
+          "lib/net6.0/SkiaSharp.HarfBuzz.dll": {
+            "assemblyVersion": "2.88.0.0",
+            "fileVersion": "2.88.9.0"
+          }
+        }
+      },
+      "SkiaSharp.NativeAssets.macOS/3.119.0": {
+        "runtimeTargets": {
+          "runtimes/osx/native/libSkiaSharp.dylib": {
+            "rid": "osx",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "SkiaSharp.NativeAssets.WebAssembly/3.119.0": {},
+      "SkiaSharp.NativeAssets.Win32/3.119.0": {
+        "runtimeTargets": {
+          "runtimes/win-arm64/native/libSkiaSharp.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libSkiaSharp.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x86/native/libSkiaSharp.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "SkiaSharp.Views.Blazor/3.119.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components.Web": "8.0.0",
+          "SkiaSharp": "3.119.0",
+          "SkiaSharp.NativeAssets.WebAssembly": "3.119.0"
+        },
+        "runtime": {
+          "lib/net8.0/SkiaSharp.Views.Blazor.dll": {
+            "assemblyVersion": "3.119.0.0",
+            "fileVersion": "3.119.0.0"
+          }
+        }
+      },
+      "System.IO.Pipelines/8.0.0": {},
+      "System.IO.Ports/9.0.9": {
+        "dependencies": {
+          "runtime.native.System.IO.Ports": "9.0.9"
+        },
+        "runtime": {
+          "lib/net8.0/System.IO.Ports.dll": {
+            "assemblyVersion": "9.0.0.9",
+            "fileVersion": "9.0.925.41916"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/net8.0/System.IO.Ports.dll": {
+            "rid": "unix",
+            "assetType": "runtime",
+            "assemblyVersion": "9.0.0.9",
+            "fileVersion": "9.0.925.41916"
+          },
+          "runtimes/win/lib/net8.0/System.IO.Ports.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "9.0.0.9",
+            "fileVersion": "9.0.925.41916"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Batc.Web/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HarfBuzzSharp/7.3.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Hq+5+gx10coOvuRgB13KBwiWxJq1QeYuhtVLbA01ZCWaugOnolUahF44KvrQTUUHDNk/C7HB6SMaebsZeOdhgg==",
+      "path": "harfbuzzsharp/7.3.0.3",
+      "hashPath": "harfbuzzsharp.7.3.0.3.nupkg.sha512"
+    },
+    "HarfBuzzSharp.NativeAssets.macOS/7.3.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UAwIYnkbBTzBJv1Id8FijY/i8QiIepRemSXufU8fyzwWhYJdx4+ajG8yQUie5HW/uusbVLFSr26muSlJOFDgSw==",
+      "path": "harfbuzzsharp.nativeassets.macos/7.3.0.3",
+      "hashPath": "harfbuzzsharp.nativeassets.macos.7.3.0.3.nupkg.sha512"
+    },
+    "HarfBuzzSharp.NativeAssets.WebAssembly/8.3.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-loJweK2u/mH/3C2zBa0ggJlITIszOkK64HLAZB7FUT670dTg965whLFYHDQo69NmC4+d9UN0icLC9VHidXaVCA==",
+      "path": "harfbuzzsharp.nativeassets.webassembly/8.3.1.1",
+      "hashPath": "harfbuzzsharp.nativeassets.webassembly.8.3.1.1.nupkg.sha512"
+    },
+    "HarfBuzzSharp.NativeAssets.Win32/7.3.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RPxRXD16KtSs8Yxr2RK9Qs7AwyN9MlpqZIYs0AvfaJwl7RAtVhC0+u2f2SKwX0uMYYd3O98Z+OBA1sj6aWVKQA==",
+      "path": "harfbuzzsharp.nativeassets.win32/7.3.0.3",
+      "hashPath": "harfbuzzsharp.nativeassets.win32.7.3.0.3.nupkg.sha512"
+    },
+    "LiveChartsCore/2.0.0-rc6.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yaeFXCpH7AspjMKzXNdfr1Ikg06Dm+a4XRW/8wBtHAa/TEVJLY8yBsG6pNpjrPk+FpRaSImlNYw7pv298W1XPw==",
+      "path": "livechartscore/2.0.0-rc6.1",
+      "hashPath": "livechartscore.2.0.0-rc6.1.nupkg.sha512"
+    },
+    "LiveChartsCore.SkiaSharpView/2.0.0-rc6.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FU+0uIxL3xR631+4aN296L+M3f6qWrIEUJr8+SSmcGVVa27iB0+ko55IRInZGdYlmaR+8mRTPAXObXT6/1EMDQ==",
+      "path": "livechartscore.skiasharpview/2.0.0-rc6.1",
+      "hashPath": "livechartscore.skiasharpview.2.0.0-rc6.1.nupkg.sha512"
+    },
+    "LiveChartsCore.SkiaSharpView.Blazor/2.0.0-rc6.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jaLAstisYVy2cpt9IXnJxg0l1V2PYyEoPjGtmXRdLO4QgKf7HIAt/Frdt0IX10YZcmiHWs1OY0O4HxWYiJMqdg==",
+      "path": "livechartscore.skiasharpview.blazor/2.0.0-rc6.1",
+      "hashPath": "livechartscore.skiasharpview.blazor.2.0.0-rc6.1.nupkg.sha512"
+    },
+    "MathNet.Numerics/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pg1W2VwaEQMAiTpGK840hZgzavnqjlCMTVSbtVCXVyT+7AX4mc1o89SPv4TBlAjhgCOo9c1Y+jZ5m3ti2YgGgA==",
+      "path": "mathnet.numerics/5.0.0",
+      "hashPath": "mathnet.numerics.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authorization/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OGIGJMnlWvQgcweHcv1Mq/P24Zx/brUHeEdD05NzqkSXmQSnFomTvVyCuBtCXT4JPfv2m70y1RSocmd9bIbJRg==",
+      "path": "microsoft.aspnetcore.authorization/8.0.0",
+      "hashPath": "microsoft.aspnetcore.authorization.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kqspqWo3lT+rrSd39kvrV7SZYl0znYZQbQ8SJaHjDA8ffMPV6BkfVe0i6LvxRPwq/agwSWdIDq2j4x+78Frypg==",
+      "path": "microsoft.aspnetcore.components/8.0.0",
+      "hashPath": "microsoft.aspnetcore.components.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.Analyzers/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lJMa9kQDw3vkqcMMbuicIpyax7QH6imQFbLRzVqJzrGs5LN954IPaJVkDzRCEXFVAN24Cml6g4mEF3b0D7Oa+Q==",
+      "path": "microsoft.aspnetcore.components.analyzers/8.0.0",
+      "hashPath": "microsoft.aspnetcore.components.analyzers.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.Forms/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iiYB/7Sl/vTURO4EiTUCmfIXujlJOl+Gh7nknCFhvFQ+kKMFFXYcrszYwLN9aQSolpswc/A9a78KL59/UIezig==",
+      "path": "microsoft.aspnetcore.components.forms/8.0.0",
+      "hashPath": "microsoft.aspnetcore.components.forms.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.Web/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-aokUKvFoNqxR6bf0+iKrDfQ79OLHWYn5UGYp5MU65/il1vuRK7MAF18oGj7QgiZJUu3cMAZjCFkHbsWLhQxCsA==",
+      "path": "microsoft.aspnetcore.components.web/8.0.0",
+      "hashPath": "microsoft.aspnetcore.components.web.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Metadata/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OmuSztiZMitRTYlbMNDkBk3BinSsVcOApSNBAsrw+KYNJh6ALarPhWLlKdtvMgrKzpyCY06xtLAjTmQLURHSlQ==",
+      "path": "microsoft.aspnetcore.metadata/8.0.0",
+      "hashPath": "microsoft.aspnetcore.metadata.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-V8S3bsm50ig6JSyrbcJJ8bW2b9QLGouz+G1miK3UTaOWmMtFwNNNzUf4AleyDWUmTrWMLNnFSLEQtxmxgNQnNQ==",
+      "path": "microsoft.extensions.dependencyinjection/8.0.0",
+      "hashPath": "microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cjWrLkJXK0rs4zofsK4bSdg+jhDLTaxrkXu4gS6Y7MAlCvRyNNgwY/lJi5RDlQOnSZweHqoyvgvbdvQsRIW+hg==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/8.0.0",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-arDBqTgFCyS0EvRV7O3MZturChstm50OJ0y9bDJvAcmEPJm0FFpFyjU/JLYyStNGGey081DvnQYlncNX5SJJGA==",
+      "path": "microsoft.extensions.logging.abstractions/8.0.0",
+      "hashPath": "microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Options/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JOVOfqpnqlVLUzINQ2fox8evY2SKLYJ3BV8QDe/Jyp21u1T7r45x/R/5QdteURMR5r01GxeJSBBUOCOyaNXA3g==",
+      "path": "microsoft.extensions.options/8.0.0",
+      "hashPath": "microsoft.extensions.options.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Primitives/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bXJEZrW9ny8vjMF1JV253WeLhpEVzFo1lyaZu1vQ4ZxWUlVvknZ/+ftFgVheLubb4eZPSwwxBeqS1JkCOjxd8g==",
+      "path": "microsoft.extensions.primitives/8.0.0",
+      "hashPath": "microsoft.extensions.primitives.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.JSInterop/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-qQqASbHxWIddssdEBKUQ/49j21SEstiho6VAepPQa9eISLCBCE6wq0m3YaB6cpdF5U+AWX5F3FvDfmssql3xtw==",
+      "path": "microsoft.jsinterop/8.0.0",
+      "hashPath": "microsoft.jsinterop.8.0.0.nupkg.sha512"
+    },
+    "runtime.android-arm.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rb/VSN56f424TEHh8B9jb7jbbdw85g6QdL6utlUf/ZTnMCj+tYC0omW36pSN+zVyFRCxGhyvdlVIYN+XoLiyMg==",
+      "path": "runtime.android-arm.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.android-arm.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.android-arm64.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-dzMbLwdPPFi1dZARebigPIHBn8FvvHLEi8k5mSyvxs+ZK3WjsRHT3t92WFaLDHxHVjUY1optkco+Ier1FLj25A==",
+      "path": "runtime.android-arm64.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.android-arm64.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.android-x64.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wrZ8sD/93egrbOFUMtTrgQ3gVPEt0xXVgSBSuLt0QzJK3e1YKABI27r/VDmSE38rtYuzp6ZHrC7xTApu4IdscQ==",
+      "path": "runtime.android-x64.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.android-x64.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.android-x86.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jw6XJPbyX2QSJgOOr0BjRK2jtfsg6Cs7P8XiThlEgqtw96U1MdeGj5aSPz36UUfkjUqLdYfVbsNatkOGDmdQcw==",
+      "path": "runtime.android-x86.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.android-x86.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.linux-arm.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-R54MoqMsAlk98g0dNgNen4Gdl7XMVTVOtl2+/JvVQLNnV9WV3sNXcgbFGsK/iodnvymVO+MmRdu1r/8bhLqVtw==",
+      "path": "runtime.linux-arm.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.linux-arm.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.linux-arm64.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-feOomLC5JeNyQOp7E9GUQ6cjTCB7nhSBcDq9GfZ3abmSdl9Asi5p5Pt181i0kBK4B98ljPbMtU2Wufx6MM3iQg==",
+      "path": "runtime.linux-arm64.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.linux-arm64.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.linux-bionic-arm64.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tzQkPQVKvaEf+ualuC+YemICWYFFEuutXE5o+BH0h4hcBZ2EKZJHPimxpmG96rLYcXf43WUd1+co+qDGlh1SmQ==",
+      "path": "runtime.linux-bionic-arm64.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.linux-bionic-arm64.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.linux-bionic-x64.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IInOJl3XttzJSbsc7objCiNELLACvdNBEQT0Utrky1FpYlvcHhw/8PMbXqvBau0Sf5QHs/z2YTFcrYePNk6GxQ==",
+      "path": "runtime.linux-bionic-x64.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.linux-bionic-x64.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.linux-musl-arm.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ufMYGCHEY8mKvEssn/FCt4MyMvKokYZwzwP/uCGgGJm6fYd+2SdoQ2Nzxqzn9hhNH9QJiOV+kBsV6Z8zZb5j2Q==",
+      "path": "runtime.linux-musl-arm.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.linux-musl-arm.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.linux-musl-arm64.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-URGV/8TdXryIeiYEElxB6Zj0UN1hLOuWjpZsqrlf8AYrNan6kgMLfsX5Bb1F5Ew3cfEkoXM+m4rpLsZXG9UdsA==",
+      "path": "runtime.linux-musl-arm64.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.linux-musl-arm64.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.linux-musl-x64.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7wpHMdOUNMuR9+zWPWVCBem6XzamYM+hOYGgnmFITjU882+l7vYalNDdWS8C+GAnDJ6s9P7JJoQFbQHCSFKmtw==",
+      "path": "runtime.linux-musl-x64.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.linux-musl-x64.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.linux-x64.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rG0SAb2IeSj8T2L/rrqvroM/J9nakmd3VQgRuo99kJhRkOHE+tHrtEtL6pzBYVl2sbbk1vSmOVQxuiOcvXGwwQ==",
+      "path": "runtime.linux-x64.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.linux-x64.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.maccatalyst-arm64.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yXhV4uh8dA8rvVSRTyy5NPWCFmQ4jaYoU8E+4zW22vNlP9XSYmaUO05c/C7JZX3AaUw9k0iBZKrBoATxQGUhCA==",
+      "path": "runtime.maccatalyst-arm64.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.maccatalyst-arm64.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.maccatalyst-x64.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-u4pJMVZKobDvEsphH5N+4aGiH/AM+y8A4ZneXiZ/QYJt/+4X2qDogBy/xNHSsM4Ta6B2hBoD79wlodnRnsmveA==",
+      "path": "runtime.maccatalyst-x64.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.maccatalyst-x64.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-N4JF4C0f6wIUznuAkxfSWiqYvIME5ivjLPTSImMb+i3QyZajNfVSi6/QF2l0akFm46yeRNUncly80VQXj2u3Gg==",
+      "path": "runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.osx-arm64.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+WKpp10Ieec5ebDZjTPQSWCr8uYrqZd8FfBMNSVwt52CKzfOlG1L21GOokq2HM6iKv5yRy6TXhCUhekr58/TZQ==",
+      "path": "runtime.osx-arm64.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.osx-arm64.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "runtime.osx-x64.runtime.native.System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-mSy4Kp1/EnXZAnG8LSl/t/PqWP2Aufnm2ib039Ld4SVlMf787hzYsNe9692DccooehMkIGkbLm46Gls0ILaRvA==",
+      "path": "runtime.osx-x64.runtime.native.system.io.ports/9.0.9",
+      "hashPath": "runtime.osx-x64.runtime.native.system.io.ports.9.0.9.nupkg.sha512"
+    },
+    "SkiaSharp/3.119.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gR9yVoOta2Mc1Rxt15LD65AckfHMfwjIs/3kkD59C9bT2nYYISsE6uz3t4aMPNHA6CgsIL0Ssn+jE5OVilZ1yw==",
+      "path": "skiasharp/3.119.0",
+      "hashPath": "skiasharp.3.119.0.nupkg.sha512"
+    },
+    "SkiaSharp.HarfBuzz/2.88.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5lyjX04CSWTKFYMSNN6SMupV2qzYDr8W/u8S3ZEkr+Sg3kOi0YE06EOqG0tzn/YPBID89xam4L3rz3hUUKOGEQ==",
+      "path": "skiasharp.harfbuzz/2.88.9",
+      "hashPath": "skiasharp.harfbuzz.2.88.9.nupkg.sha512"
+    },
+    "SkiaSharp.NativeAssets.macOS/3.119.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YE1vNn0Nyw2PWtv7hw1PYkKJO0itFiQp9vSqGppZUKzQJqwp28a2jgdCMPfYtOiR8KCnDgZqQoynqJRRaE2ZVg==",
+      "path": "skiasharp.nativeassets.macos/3.119.0",
+      "hashPath": "skiasharp.nativeassets.macos.3.119.0.nupkg.sha512"
+    },
+    "SkiaSharp.NativeAssets.WebAssembly/3.119.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nHna8C+bi8GGwx1DTRAyoJ5GOAaK9qzojj9Q7Dhh6FiSfnt/psWzEfe39/RYqdzc15+xcm02UTvp5FwsOPk7Kw==",
+      "path": "skiasharp.nativeassets.webassembly/3.119.0",
+      "hashPath": "skiasharp.nativeassets.webassembly.3.119.0.nupkg.sha512"
+    },
+    "SkiaSharp.NativeAssets.Win32/3.119.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IwC9yx36lOdXVT2DjgmWHl1qkVspfj8ctd4+li8CNnvqdfaTolXCOh6TLznURcPAvzatx9K/tLOB7zT6T8EA9w==",
+      "path": "skiasharp.nativeassets.win32/3.119.0",
+      "hashPath": "skiasharp.nativeassets.win32.3.119.0.nupkg.sha512"
+    },
+    "SkiaSharp.Views.Blazor/3.119.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yv/l6WdBdQ/MNMDmxi2HfHDsxwvHGbkjF6YE80fEfkyRF1eJRz1CJqoHyozCm4IAKcRCF7f8IUD9CL0sXJGvqg==",
+      "path": "skiasharp.views.blazor/3.119.0",
+      "hashPath": "skiasharp.views.blazor.3.119.0.nupkg.sha512"
+    },
+    "System.IO.Pipelines/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FHNOatmUq0sqJOkTx+UF/9YK1f180cnW5FVqnQMvYUN0elp6wFzbtPSiqbo1/ru8ICp43JM1i7kKkk6GsNGHlA==",
+      "path": "system.io.pipelines/8.0.0",
+      "hashPath": "system.io.pipelines.8.0.0.nupkg.sha512"
+    },
+    "System.IO.Ports/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zbry46Em5c8K0GN2QUAsnT6qQN6TpNsTKBw214Hi4hei1yt8l7QlRYfO5405NhTiPqeXBLbb7VALf2J2n5SS3w==",
+      "path": "system.io.ports/9.0.9",
+      "hashPath": "system.io.ports.9.0.9.nupkg.sha512"
+    }
+  }
+}

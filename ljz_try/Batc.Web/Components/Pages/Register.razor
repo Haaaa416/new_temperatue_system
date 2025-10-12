@@ -1,0 +1,39 @@
+@page "/register"
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+
+
+<div class="register-page">
+    <div class="panel-title">Add Login Account</div>
+
+    <div class="form-card">
+        <div class="form-row">
+            <label>Name:</label>
+            <input placeholder="Enter Name" />
+        </div>
+
+        <div class="form-row">
+            <label>ID:</label>
+            <input placeholder="Enter ID" />
+        </div>
+
+        <div class="form-row">
+            <label>Role:</label>
+            <select>
+                <option>Doctor</option>
+                <option>Nurse</option>
+                <option>Admin</option>
+            </select>
+        </div>
+
+        <div class="actions">
+            <button class="btn-secondary" @onclick="Back"> Back</button>
+            <button class="btn-add">ADD</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private void Back() => Nav.NavigateTo("/");
+}
+

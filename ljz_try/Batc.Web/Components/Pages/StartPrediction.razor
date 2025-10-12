@@ -1,0 +1,465 @@
+﻿@page "/perdicts"
+@rendermode InteractiveServer
+
+@using System.Globalization
+@using System.Linq
+@using System.IO.Ports
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
+@using Batc.Web.Models
+@using LiveChartsCore
+@using LiveChartsCore.SkiaSharpView
+@using LiveChartsCore.SkiaSharpView.Blazor
+@implements IDisposable
+
+@inject Batc.Web.Services.AppState AppState
+@inject Batc.Web.Services.VisitLogService VisitLog
+@inject NavigationManager Nav
+@inject Batc.Web.Services.ChartState Chart
+@inject Batc.Web.Services.SignalService Signal
+
+<header class="topbar">
+    <div class="brand">
+        <img src="images/logo.png" alt="BATC" />
+        <span>BATC</span>
+        <button class="back-btn" title="Back" @onclick="GoBack">
+            <img src="images/back.png" alt="Back" />
+            <span>Back</span>
+        </button>
+    </div>
+
+    <div class="user-section">
+        <button class="icon-btn settings-btn" @onclick="ShowHelp">
+            <img src="images/setting.png" alt="Settings" width="20" height="20" />
+        </button>
+        <button class="icon-btn notification-btn">
+            <img src="images/notification.png" alt="Notifications" width="20" height="20" />
+        </button>
+
+        <div class="user">
+            <img src="images/醫生_1.png" alt="Dr. Wang" class="avatar" />
+            <span>Dr. Wang</span>
+        </div>
+
+        <button class="logout-btn" @onclick="Logout">Log out</button>
+    </div>
+</header>
+
+@if (showHelpModal)
+{
+    <div class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;" @onclick="HideHelp">
+        <div class="modal-content" style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);" @onclick:stopPropagation="true">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; color: #000;">使用說明</h3>
+                <button @onclick="HideHelp" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
+            </div>
+            <div style="line-height: 1.2; color: #555;">
+                <p>• 首先須先選擇哪個模型進行預測</p>
+                <p>• 再選擇是否此患者未來要加入訓練</p>
+                <p>• 患者感受在治療截止後才能填寫</p>
+                <p>• 需先測量 baseline 才能進行後續預測</p>
+                <p>• 點擊 <strong>Finish Prediction</strong> 才完成全部治療</p>
+            </div>
+        </div>
+    </div>
+}
+
+@{
+    var p = (string.IsNullOrWhiteSpace(Id)
+                ? AppState.Patients?.FirstOrDefault()
+                : AppState.Patients?.FirstOrDefault(x => x.Id == Id))
+            ?? new Patient { Name = "James Wilson", Id = "PAT-2023-1296", Age = 35, Gender = "Male", BloodType = "A", Height = 178, Weight = 75, AvatarUrl = "images/病人_1.png" };
+    var avatar = string.IsNullOrWhiteSpace(p.AvatarUrl) ? "images/病人_1.png" : p.AvatarUrl;
+}
+
+<main class="wrap">
+    <section class="grid">
+
+        <h3>即時波形（CH1 / CH2）</h3>
+
+        <!-- 工具列：COM 掃描 + 連線 + 視窗寬度 -->
+        <div class="signal-toolbar">
+            <label>COM 連線：</label>
+
+            <select @bind="selectedPort" style="min-width:110px">
+                @if (ports.Count == 0)
+                {
+                    <option disabled>找不到任何埠</option>
+                }
+                else
+                {
+                    @foreach (var n in ports)
+                    {
+                        <option value="@n">@n</option>
+                    }
+                }
+            </select>
+
+            <button title="重新掃描" @onclick="ReloadPorts">🔄</button>
+            <button @onclick="Connect" disabled="@string.IsNullOrEmpty(selectedPort)">連線</button>
+            <button @onclick="Disconnect">中斷</button>
+
+            <span style="margin-left:12px">視窗寬度：</span>
+            <input type="number" @bind="Chart.MaxPoints" style="width:90px" />
+        </div>
+
+        <!-- 兩個示波框 -->
+        <div class="signal-grid">
+            <div class="scope-card">
+                <div class="scope-title">CH1</div>
+                <div class="scope-row">
+                    <lvc:CartesianChart Series="@seriesCh1" YAxes="@y1" Height="220" />
+                    <div class="axis-panel">
+                        <div>Max</div><input type="number" @bind="y1Max" @bind:event="oninput" />
+                        <div>Min</div><input type="number" @bind="y1Min" @bind:event="oninput" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="scope-card">
+                <div class="scope-title">CH2</div>
+                <div class="scope-row">
+                    <lvc:CartesianChart Series="@seriesCh2" YAxes="@y2" Height="220" />
+                    <div class="axis-panel">
+                        <div>Max</div><input type="number" @bind="y2Max" @bind:event="oninput" />
+                        <div>Min</div><input type="number" @bind="y2Min" @bind:event="oninput" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (showSpectrum)
+        {
+            <h4 class="mt-4">（可選）頻譜</h4>
+            <div class="signal-grid">
+                <lvc:CartesianChart Series="@seriesF1" Height="220" />
+                <lvc:CartesianChart Series="@seriesF2" Height="220" />
+            </div>
+        }
+
+    </section>
+</main>
+
+<style>
+    .signal-toolbar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-end;
+        margin: 8px 0 12px;
+    }
+
+    .signal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    .scope-card {
+        background: linear-gradient(180deg,#fff8ef,#ffffff);
+        border: 2px solid #d49162;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.08);
+        padding: 12px;
+        position: relative;
+    }
+
+    .scope-title {
+        position: absolute;
+        top: -12px;
+        left: 16px;
+        background: #fff;
+        padding: 0 8px;
+        color: #444;
+        font-weight: 600;
+    }
+
+    .scope-row {
+        display: grid;
+        grid-template-columns: 1fr 120px;
+        gap: 12px;
+        align-items: start;
+    }
+
+    .axis-panel {
+        display: grid;
+        grid-template-columns: 36px 1fr;
+        gap: 6px;
+        font-size: 12px;
+        color: #333;
+    }
+
+        .axis-panel input {
+            width: 80px;
+        }
+</style>
+
+@code {
+    // ---------- 路由/Query ----------
+    [Parameter] public string? Id { get; set; }
+    [SupplyParameterFromQuery(Name = "x")] public double? qx { get; set; }
+    [SupplyParameterFromQuery(Name = "y")] public double? qy { get; set; }
+    [SupplyParameterFromQuery(Name = "front")] public int? qFront { get; set; }
+    [SupplyParameterFromQuery(Name = "label")] public string? qLabel { get; set; }
+
+    // ---------- LiveCharts ----------
+    private bool showSpectrum = false;
+
+    private ISeries[] seriesCh1 = Array.Empty<ISeries>();
+    private ISeries[] seriesCh2 = Array.Empty<ISeries>();
+    private ISeries[] seriesF1 = Array.Empty<ISeries>();
+    private ISeries[] seriesF2 = Array.Empty<ISeries>();
+
+    // 兩張圖各自的 Y 軸（可調整）
+    private Axis axis1 = new() { MinLimit = -100, MaxLimit = 100 };
+    private Axis axis2 = new() { MinLimit = -100, MaxLimit = 100 };
+    private Axis[] y1 => new[] { axis1 };
+    private Axis[] y2 => new[] { axis2 };
+    private double y1Min { get => axis1.MinLimit ?? -100; set => axis1.MinLimit = value; }
+    private double y1Max { get => axis1.MaxLimit ?? 100; set => axis1.MaxLimit = value; }
+    private double y2Min { get => axis2.MinLimit ?? -100; set => axis2.MinLimit = value; }
+    private double y2Max { get => axis2.MaxLimit ?? 100; set => axis2.MaxLimit = value; }
+
+    // 事件委派，保留參考好在 Dispose 解除
+    private Action<double[], double[]>? _onWave;
+    private Action<double[], double[]>? _onSpec;
+
+    // ---------- COM 埠掃描 ----------
+    private List<string> ports = new();
+    private string? selectedPort;
+
+    private void ReloadPorts()
+    {
+        try
+        {
+            ports = SerialPort.GetPortNames()
+                              .OrderBy(n => n, StringComparer.OrdinalIgnoreCase)
+                              .ToList();
+            if (string.IsNullOrEmpty(selectedPort) || !ports.Contains(selectedPort))
+                selectedPort = ports.FirstOrDefault();
+        }
+        catch
+        {
+            ports = new();
+            selectedPort = null;
+        }
+    }
+
+    private async Task Connect()
+    {
+        if (string.IsNullOrEmpty(selectedPort)) ReloadPorts();
+        if (!string.IsNullOrEmpty(selectedPort))
+            await Signal.StartAsync(selectedPort!);
+    }
+
+    private void Disconnect() => Signal.Stop();
+
+    // ---------- UI 狀態 ----------
+    private bool showHelpModal = false;
+    private Patient? patient;
+    private record DotPoint(double X, double Y);
+    private List<DotPoint> CurrentDots = new();
+    private int? SelectedDotNo;
+    private int? ConfirmedDotNo;
+    private DotPoint? SelectedDotPt;
+
+    private const double ImgW = 280, ImgH = 380;
+    private const int FrameW = 360, FrameH = 360;
+    private double scale = 2.0;
+
+    private const int RedW = 64, RedH = 64;
+    private const double RedTipYRatio = 0.78;
+    private double RedTipY => RedH * RedTipYRatio;
+
+    private double cx, cy;     // 中心 (原圖座標)
+    private double redX, redY; // 紅點
+    private bool dragging;
+
+    private bool usingRegion;
+    private string? zoomImagePath;
+
+    // 字典 key 比較器
+    private sealed class StringTupleComparer : IEqualityComparer<(string Label, bool Front)>
+    {
+        public static readonly StringTupleComparer Instance = new();
+        public bool Equals((string Label, bool Front) x, (string Label, bool Front) y)
+            => x.Front == y.Front && string.Equals(x.Label, y.Label, StringComparison.OrdinalIgnoreCase);
+        public int GetHashCode((string Label, bool Front) obj)
+            => HashCode.Combine(obj.Front, StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Label ?? ""));
+    }
+
+    // 點位圖
+    private static readonly Dictionary<(string Label, bool Front), List<DotPoint>> DotMap
+        = new(StringTupleComparer.Instance)
+    {
+      { ("left shoulder",  true),  new() { new(0.455,0.245), new(0.59,0.5), new(0.805,0.25) } },
+      { ("right shoulder", true),  new() { new(0.21,0.221),  new(0.442,0.492), new(0.6599,0.23) } },
+      { ("left upper arm", true),  new() { new(0.545,0.229), new(0.3,0.4989), new(0.371,0.7174), new(0.563,0.7954), new(0.494,0.624), new(0.693,0.3624) } },
+      { ("right upper arm",true),  new() { new(0.44,0.207),  new(0.729,0.46),  new(0.658,0.704),  new(0.44,0.849),  new(0.567,0.547), new(0.34,0.378) } },
+      { ("left knee",      true),  new() { new(0.228,0.298), new(0.168,0.82), new(0.564,0.26), new(0.456,0.558), new(0.476,0.8828), new(0.798,0.451), new(0.724,0.882) } },
+      { ("right knee",     true),  new() { new(0.16,0.38),   new(0.26,0.852), new(0.418,0.197), new(0.492,0.558), new(0.525,0.88), new(0.72,0.22), new(0.854,0.876) } },
+      { ("left ankle",     true),  new() { new(0.269,0.2),   new(0.218,0.63), new(0.549,0.165), new(0.461,0.41), new(0.442,0.7), new(0.763,0.318), new(0.682,0.691) } },
+      { ("right ankle",    true),  new() { new(0.256,0.282), new(0.336,0.67), new(0.464,0.132), new(0.528,0.424), new(0.548,0.692), new(0.71,0.153), new(0.823,0.689) } },
+      { ("upper back",     false), new() { new(0.26,0.442),  new(0.268,0.752), new(0.486,0.358), new(0.486,0.62), new(0.70,0.442), new(0.70,0.75) } },
+      { ("mid back",       false), new() { new(0.24,0.46),   new(0.498,0.304), new(0.498,0.541), new(0.732,0.466) } },
+    };
+
+    private static readonly Dictionary<string, string> RegionMapFront = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["left shoulder"] = "images/new-left-shoulder.png",
+        ["right shoulder"] = "images/new-right-shoulder.png",
+        ["left upper arm"] = "images/new-left-upper-arm.png",
+        ["right upper arm"] = "images/new-right-upper-arm.png",
+        ["left knee"] = "images/new-left-knee.png",
+        ["right knee"] = "images/new-right-knee.png",
+        ["left ankle"] = "images/new-left-ankle.png",
+        ["right ankle"] = "images/new-right-ankle.png",
+    };
+    private static readonly Dictionary<string, string> RegionMapBack = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["upper back"] = "images/new-upper-back.png",
+        ["mid back"] = "images/new-mid-back.png",
+    };
+
+    // 顯示樣式（保留你原本的互動區）
+    protected string ZoomStyle
+    {
+        get
+        {
+            if (usingRegion && !string.IsNullOrEmpty(zoomImagePath))
+                return $"width:{FrameW}px;height:{FrameH}px;background-image:url('{zoomImagePath}');background-repeat:no-repeat;background-size:contain;background-position:center center;";
+            var bgW = ImgW * scale; var bgH = ImgH * scale;
+            var posX = -(cx * scale - FrameW / 2.0);
+            var posY = -(cy * scale - FrameH / 2.0);
+            return $"width:{FrameW}px;height:{FrameH}px;background-image:url('images/body.png');background-repeat:no-repeat;background-size:{bgW}px {bgH}px;background-position:{posX:F1}px {posY:F1}px;";
+        }
+    }
+
+    protected double CenterX => FrameW / 2.0;
+    protected double CenterY => FrameH / 2.0;
+    protected double RedScreenX => usingRegion ? CenterX : (redX * scale - (cx * scale - FrameW / 2.0));
+    protected double RedScreenY => usingRegion ? CenterY : (redY * scale - (cy * scale - FrameH / 2.0));
+
+    private string labelText = string.Empty;
+    private bool isFront;
+
+    // ---------- 生命週期 ----------
+    protected override void OnInitialized()
+    {
+        VisitLog.OnChange += StateHasChanged;
+
+        // LiveCharts series 綁定
+        seriesCh1 = new ISeries[] { new LineSeries<double> { Values = Chart.Ch1, GeometrySize = 0 } };
+        seriesCh2 = new ISeries[] { new LineSeries<double> { Values = Chart.Ch2, GeometrySize = 0 } };
+        seriesF1 = new ISeries[] { new LineSeries<double> { Values = Chart.Fft1, GeometrySize = 0 } };
+        seriesF2 = new ISeries[] { new LineSeries<double> { Values = Chart.Fft2, GeometrySize = 0 } };
+
+        // 訂閱資料事件
+        _onWave = (a, b) => { Chart.AppendWave(a, b); _ = InvokeAsync(StateHasChanged); };
+        _onSpec = (f1, f2) => { if (showSpectrum) { Chart.SetSpectrum(f1, f2); _ = InvokeAsync(StateHasChanged); } };
+        Signal.OnWaveBlock += _onWave;
+        Signal.OnSpectrum += _onSpec;
+
+        // 第一次掃描 COM 埠
+        ReloadPorts();
+    }
+
+    protected override void OnParametersSet()
+    {
+        // 病人
+        patient = string.IsNullOrWhiteSpace(Id)
+          ? AppState.Patients?.FirstOrDefault()
+          : AppState.Patients?.FirstOrDefault(p => p.Id == Id);
+
+        // Query 參數 → 頁面欄位
+        isFront = (qFront ?? 1) == 1;
+        labelText = qLabel ?? string.Empty;
+
+        // 視覺化初始化
+        var map = isFront ? RegionMapFront : RegionMapBack;
+        usingRegion = !string.IsNullOrWhiteSpace(labelText) && map.TryGetValue(labelText, out zoomImagePath);
+
+        if (usingRegion)
+        {
+            redX = ImgW / 2; redY = ImgH / 2;
+            cx = redX; cy = redY;
+        }
+        else
+        {
+            cx = Math.Clamp((qx ?? 0.5) * ImgW, 0, ImgW);
+            cy = Math.Clamp((qy ?? 0.5) * ImgH, 0, ImgH);
+            redX = cx; redY = cy;
+        }
+
+        if (!string.IsNullOrWhiteSpace(labelText)
+            && DotMap.TryGetValue((labelText, isFront), out var dots))
+            CurrentDots = dots;
+        else
+            CurrentDots = new();
+    }
+
+    public void Dispose()
+    {
+        VisitLog.OnChange -= StateHasChanged;
+        if (_onWave is not null) Signal.OnWaveBlock -= _onWave;
+        if (_onSpec is not null) Signal.OnSpectrum -= _onSpec;
+    }
+
+    // ---------- 互動/導覽 ----------
+    private void Logout() => Nav.NavigateTo("/");
+    private void ShowHelp() => showHelpModal = true;
+    private void HideHelp() => showHelpModal = false;
+    private void GoBack() => Nav.NavigateTo($"/confirm/{Uri.EscapeDataString(Id ?? "")}");
+    private void Start() => Nav.NavigateTo("/perdicts");
+
+    private void RefineCenter(MouseEventArgs e)
+    {
+        if (usingRegion) return;
+        var px = (e.OffsetX - FrameW / 2.0) / scale + cx;
+        var py = (e.OffsetY - FrameH / 2.0) / scale + cy;
+        cx = Math.Clamp(px, 0, ImgW);
+        cy = Math.Clamp(py, 0, ImgH);
+    }
+
+    private void StartDrag(MouseEventArgs e) => dragging = true;
+    private void EndDrag() => dragging = false;
+
+    private void OnMove(MouseEventArgs e)
+    {
+        if (!dragging) return;
+
+        if (usingRegion)
+        {
+            redX = ImgW * e.OffsetX / FrameW;
+            redY = ImgH * e.OffsetY / FrameH;
+        }
+        else
+        {
+            var px = (e.OffsetX - FrameW / 2.0) / scale + cx;
+            var py = (e.OffsetY - FrameH / 2.0) / scale + cy;
+            redX = Math.Clamp(px, 0, ImgW);
+            redY = Math.Clamp(py, 0, ImgH);
+        }
+    }
+
+    private void SelectDot(int index, DotPoint p)
+    {
+        SelectedDotNo = index;
+        SelectedDotPt = p;
+        StateHasChanged();
+    }
+
+    private void Finish()
+    {
+        ConfirmedDotNo = SelectedDotNo;
+        var nx = redX / ImgW; var ny = redY / ImgH;
+        Console.WriteLine($"final target: x={nx:F4}, y={ny:F4}, label={labelText}");
+    }
+
+    private string labelTextDebug => labelText;
+    private bool isYesSelected = false;
+    private bool isNoSelected = false;
+
+    private void SelectYes() { isYesSelected = true; isNoSelected = false; StateHasChanged(); }
+    private void SelectNo() { isNoSelected = true; isYesSelected = false; StateHasChanged(); }
+}
