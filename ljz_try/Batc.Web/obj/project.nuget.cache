@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8Cvn/G4jdfo=",
+  "dgSpecHash": "1fZIQMcIXsk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\user\\new_temperatue_system\\ljz_try\\Batc.Web\\Batc.Web.csproj",
+  "projectFilePath": "C:\\Users\\user\\temperature2\\Batc.Web\\Batc.Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\user\\.nuget\\packages\\harfbuzzsharp\\7.3.0.3\\harfbuzzsharp.7.3.0.3.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\harfbuzzsharp.nativeassets.macos\\7.3.0.3\\harfbuzzsharp.nativeassets.macos.7.3.0.3.nupkg.sha512",

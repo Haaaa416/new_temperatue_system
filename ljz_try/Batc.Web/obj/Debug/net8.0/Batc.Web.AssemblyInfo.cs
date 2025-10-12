@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Batc.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+59b32c43b9ad8a9c7d885f442bb4bfab23f48b8d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+55e80cbe611d0243a590ab09c47c2b2eeafdadb4")]
 [assembly: System.Reflection.AssemblyProductAttribute("Batc.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Batc.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

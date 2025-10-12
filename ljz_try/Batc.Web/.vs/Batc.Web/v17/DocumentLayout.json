@@ -3,36 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\user\\temperature2\\Batc.Web\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\components\\pages\\patients.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:components\\pages\\patients.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\components\\pages\\patientdetail.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:components\\pages\\patientdetail.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\services\\signalservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:services\\signalservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\components\\pages\\connectdevice.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:components\\pages\\connectdevice.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\services\\chartstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:services\\chartstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\components\\pages\\startprediction.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:components\\pages\\startprediction.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\components\\pages\\startprediction.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:components\\pages\\startprediction.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\components\\app.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:components\\app.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\components\\pages\\connectdevice.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:components\\pages\\connectdevice.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\batc.web.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:batc.web.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\services\\signalservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:services\\signalservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|c:\\users\\user\\temperature2\\batc.web\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A9D8769A-82C4-6108-5BF8-3A3F413D4A8D}|Batc.Web.csproj|solutionrelative:properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -47,40 +43,53 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Patients.razor",
-              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\Pages\\Patients.razor",
-              "RelativeDocumentMoniker": "Components\\Pages\\Patients.razor",
-              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\Pages\\Patients.razor",
-              "RelativeToolTip": "Components\\Pages\\Patients.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-12T05:40:54.321Z",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-12T15:13:27.038Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "PatientDetail.razor",
-              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\Pages\\PatientDetail.razor",
-              "RelativeDocumentMoniker": "Components\\Pages\\PatientDetail.razor",
-              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\Pages\\PatientDetail.razor",
-              "RelativeToolTip": "Components\\Pages\\PatientDetail.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-12T05:40:30.932Z",
+              "Title": "SignalService.cs",
+              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Services\\SignalService.cs",
+              "RelativeDocumentMoniker": "Services\\SignalService.cs",
+              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Services\\SignalService.cs",
+              "RelativeToolTip": "Services\\SignalService.cs",
+              "ViewState": "AgIAAGYAAAAAAAAAAAAIwH4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-12T15:10:37.854Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ConnectDevice.razor",
-              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\Pages\\ConnectDevice.razor",
-              "RelativeDocumentMoniker": "Components\\Pages\\ConnectDevice.razor",
-              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\Pages\\ConnectDevice.razor",
-              "RelativeToolTip": "Components\\Pages\\ConnectDevice.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-12T05:40:23.26Z",
+              "Title": "ChartState.cs",
+              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Services\\ChartState.cs",
+              "RelativeDocumentMoniker": "Services\\ChartState.cs",
+              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Services\\ChartState.cs",
+              "RelativeToolTip": "Services\\ChartState.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-12T15:10:06.758Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "StartPrediction.razor.css",
+              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\Pages\\StartPrediction.razor.css",
+              "RelativeDocumentMoniker": "Components\\Pages\\StartPrediction.razor.css",
+              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\Pages\\StartPrediction.razor.css",
+              "RelativeToolTip": "Components\\Pages\\StartPrediction.razor.css",
+              "ViewState": "AgIAAMUAAAAAAAAAAAAswNYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-10-12T07:41:44.756Z",
               "EditorCaption": ""
             },
             {
@@ -91,62 +100,35 @@
               "RelativeDocumentMoniker": "Components\\Pages\\StartPrediction.razor",
               "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\Pages\\StartPrediction.razor",
               "RelativeToolTip": "Components\\Pages\\StartPrediction.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA==",
+              "ViewState": "AgIAAPwAAAAAAAAAAAAAABoBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-12T05:39:57.792Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "SignalService.cs",
-              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Services\\SignalService.cs",
-              "RelativeDocumentMoniker": "Services\\SignalService.cs",
-              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Services\\SignalService.cs",
-              "RelativeToolTip": "Services\\SignalService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-12T05:32:23.729Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAuwCMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-12T05:31:45.212Z",
+              "WhenOpened": "2025-10-12T07:36:26.668Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "App.razor",
-              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\App.razor",
-              "RelativeDocumentMoniker": "Components\\App.razor",
-              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\App.razor",
-              "RelativeToolTip": "Components\\App.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
+              "Title": "ConnectDevice.razor",
+              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\Pages\\ConnectDevice.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\ConnectDevice.razor",
+              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Components\\Pages\\ConnectDevice.razor",
+              "RelativeToolTip": "Components\\Pages\\ConnectDevice.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-12T05:28:57.056Z",
+              "WhenOpened": "2025-10-12T07:35:53.06Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "Batc.Web.csproj",
-              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Batc.Web.csproj",
-              "RelativeDocumentMoniker": "Batc.Web.csproj",
-              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Batc.Web.csproj",
-              "RelativeToolTip": "Batc.Web.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-10-12T05:24:33.759Z",
-              "EditorCaption": ""
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\user\\temperature2\\Batc.Web\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\user\\temperature2\\Batc.Web\\Properties\\launchSettings.json",
+              "RelativeToolTip": "Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-12T05:21:38.303Z"
             }
           ]
         }
