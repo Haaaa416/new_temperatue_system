@@ -4,10 +4,10 @@
     "\\Components",
     "\\Components\\Pages",
     "\\Models",
+    "\\Properties",
     "\\Services",
-    "\\wwwroot",
-    "\\wwwroot\\images"
+    "\\wwwroot"
   ],
-  "SelectedNode": "\\Services\\AppState.cs",
+  "SelectedNode": "\\Components\\Pages\\ConnectDevice.razor",
   "PreviewInSolutionExplorer": false
 }
