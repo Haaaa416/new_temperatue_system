@@ -1,0 +1,235 @@
+.patients-page {
+    display: flex;
+    gap: 32px;
+    padding: 24px 28px;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 60px 8px 40px;
+    min-width: 100%;
+    border-bottom: 3px solid #D1D1D1;
+    background: #fff;
+    justify-content: space-between; 
+}
+
+ .topbar .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.topbar .brand img {
+    width: 30px;
+    height: 30px;
+}
+
+.topbar .spacer {
+flex: 1;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: opacity 0.2s;
+    outline: none; /* 移除點擊時的焦點框 */
+}
+
+.icon-btn:hover {
+    opacity: 0.7; /* hover 時稍微變透明，而不是加背景色 */
+}
+
+.icon-btn:focus {
+    outline: none; /* 確保焦點時也沒有框框 */
+}
+
+.icon-btn img {
+    display: block;
+    object-fit: contain;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-name {
+    font-weight: 500;
+    color: #374151;
+}
+
+.logout-btn {
+    background: #BFBFBF;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* 左：清單 */
+.patients-list {
+    flex: 0 0 50%;
+    max-width: 50%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.patient-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px; /* 減少內距 */
+    border: 2px solid #A6A6A6;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: box-shadow .15s ease, transform .05s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.patient-card:hover {
+    box-shadow: 0 6px 16px rgba(0,0,0,.06);
+    transform: translateY(-1px);
+}
+
+.patient-card img {
+    width: 48px; /* 稍微縮小頭像 */
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.patient-card .info {
+    flex: 1;
+    min-width: 0;
+}
+
+.patient-card .name {
+    font-weight: 600;
+    color: #111827;
+    font-size: 14px; /* 稍微縮小字體 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.patient-card .id {
+    font-size: 11px; /* 縮小 ID 字體 */
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+.patient-card .dob {
+    font-size: 11px; /* 縮小 DOB 字體 */
+    color: #9ca3af;
+}
+.empty-hint {
+    color: #8a8f98;
+    padding: 14px;
+    border: 1px dashed #d8dde6;
+    border-radius: 10px;
+    background: #fafbfd;
+}
+
+/* 右：表單卡片 */
+.add-panel {
+    flex: 1;
+}
+
+
+.panel-title {
+    width: 240px;
+    margin: 0 0 16px 0;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    border: 2px solid #D1D1D1;
+    border-radius: 16px;
+    font-weight: 600;
+    background: #fff;
+    color:#000000;
+}
+
+.form-card {
+    padding: 24px;
+    border: 2px solid #D1D1D1;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(0,0,0,.04);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 表單列 */
+.form-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 12px 0;
+    justify-content: flex-start; /* 確保左對齊 */
+}
+
+.form-row label {
+    width: 120px;
+    color: #262626;
+    text-align: left; /* 確保標籤左對齊 */
+    flex-shrink: 0; /* 防止標籤被壓縮 */
+}
+
+.form-row input,
+.form-row select {
+    flex: 1;
+    height: 42px;
+    border: 2px solid #A6A6A6;
+    border-radius: 8px;
+    padding: 0 10px;
+    font-size: 15px;
+    outline: none;
+    background: #fff;
+    min-width: 0; /* 允許輸入框縮小 */
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.btn-add {
+    width: 140px;
+    height: 44px;
+    border-radius: 14px;
+    border: 2px solid #A6A6A6;
+    color: #000000;
+    background: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
