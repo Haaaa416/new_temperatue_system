@@ -191,31 +191,52 @@
     // 在 Connect 方法中修改 baud rate
     private async Task Connect()
     {
-        if (_connecting) return;
+        // ===== 加入這些 Debug 輸出 =====
+        Console.WriteLine("***** Connect 方法被呼叫 *****");
+        System.Diagnostics.Debug.WriteLine("***** Connect 方法被呼叫 *****");
+        
+        if (_connecting)
+        {
+            Console.WriteLine("已經在連線中，略過");
+            return;
+        }
+        
         try
         {
             _connecting = true;
             _status = "連線中…";
+            
+            Console.WriteLine($"選擇的 COM 埠: {selectedPort}");
             StateHasChanged();
 
-            if (string.IsNullOrEmpty(selectedPort)) ReloadPorts();
+            if (string.IsNullOrEmpty(selectedPort))
+            {
+                Console.WriteLine("COM 埠為空，重新掃描");
+                ReloadPorts();
+            }
+            
             if (string.IsNullOrEmpty(selectedPort))
             {
                 _status = "找不到任何 COM 埠";
+                Console.WriteLine(_status);
                 return;
             }
 
-            // ⚠️ 改用 460800 baud rate（與原始 C# 一致）
+            Console.WriteLine($"準備呼叫 Signal.StartAsync({selectedPort}, 460800)");
             await Signal.StartAsync(selectedPort!, 460800);
+            
             _status = $"已連線：{selectedPort}";
+            Console.WriteLine(_status);
         }
         catch (Exception ex)
         {
             _status = $"連線失敗：{ex.Message}";
+            Console.WriteLine($"例外: {ex}");
         }
         finally
         {
             _connecting = false;
+            Console.WriteLine("Connect 方法結束");
             StateHasChanged();
         }
     }

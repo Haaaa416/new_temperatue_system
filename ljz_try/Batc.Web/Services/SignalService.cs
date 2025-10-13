@@ -75,6 +75,11 @@ namespace Batc.Web.Services
         // ===== 啟動 =====
         public async Task StartAsync(string portName, int baud = 460800)
         {
+            // 強制輸出到標準輸出
+            System.Diagnostics.Debug.WriteLine($"========== 開始連線 ==========");
+            System.Diagnostics.Debug.WriteLine($"COM 埠: {portName}");
+            System.Diagnostics.Debug.WriteLine($"Baud Rate: {baud}");
+
             Console.WriteLine($"========== 開始連線 ==========");
             Console.WriteLine($"COM 埠: {portName}");
             Console.WriteLine($"Baud Rate: {baud}");
