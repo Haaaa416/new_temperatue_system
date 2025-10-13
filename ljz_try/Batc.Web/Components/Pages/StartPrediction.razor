@@ -188,6 +188,7 @@
     private string _status = "尚未連線";
     private bool _connecting;
 
+    // 在 Connect 方法中修改 baud rate
     private async Task Connect()
     {
         if (_connecting) return;
@@ -204,7 +205,8 @@
                 return;
             }
 
-            await Signal.StartAsync(selectedPort!);
+            // ⚠️ 改用 460800 baud rate（與原始 C# 一致）
+            await Signal.StartAsync(selectedPort!, 460800);
             _status = $"已連線：{selectedPort}";
         }
         catch (Exception ex)
