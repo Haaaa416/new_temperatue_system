@@ -1,20 +1,15 @@
 ﻿@page "/perdicts"
 @rendermode InteractiveServer
-
 @using System.IO.Ports
-@using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.Components.Web
 @using LiveChartsCore
 @using LiveChartsCore.SkiaSharpView
 @using LiveChartsCore.SkiaSharpView.Blazor
 @implements IDisposable
-
 @inject Batc.Web.Services.AppState AppState
 @inject Batc.Web.Services.VisitLogService VisitLog
 @inject NavigationManager Nav
 @inject Batc.Web.Services.ChartState Chart
 @inject Batc.Web.Services.SignalService Signal
-
 <header class="topbar">
     <div class="brand">
         <img src="images/logo.png" alt="BATC" />
@@ -24,282 +19,483 @@
             <span>Back</span>
         </button>
     </div>
+<div class="user-section">
+    <button class="icon-btn settings-btn" @onclick="ShowHelp">
+        <img src="images/setting.png" alt="Settings" width="20" height="20" />
+    </button>
+    <button class="icon-btn notification-btn">
+        <img src="images/notification.png" alt="Notifications" width="20" height="20" />
+    </button>
 
-    <div class="user-section">
-        <button class="icon-btn settings-btn" @onclick="ShowHelp">
-            <img src="images/setting.png" alt="Settings" width="20" height="20" />
-        </button>
-        <button class="icon-btn notification-btn">
-            <img src="images/notification.png" alt="Notifications" width="20" height="20" />
-        </button>
-
-        <div class="user">
-            <img src="images/醫生_1.png" alt="Dr. Wang" class="avatar" />
-            <span>Dr. Wang</span>
-        </div>
-
-        <button class="logout-btn" @onclick="Logout">Log out</button>
+    <div class="user">
+        <img src="images/醫生_1.png" alt="Dr. Wang" class="avatar" />
+        <span>Dr. Wang</span>
     </div>
-</header>
 
+    <button class="logout-btn" @onclick="Logout">Log out</button>
+</div>
+</header>
 @if (showHelpModal)
 {
-    <div class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;" @onclick="HideHelp">
-        <div class="modal-content" style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);" @onclick:stopPropagation="true">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="margin: 0; color: #000;">使用說明</h3>
-                <button @onclick="HideHelp" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
-            </div>
-            <div style="line-height: 1.2; color: #555;">
-                <p>• 首先須先選擇哪個模型進行預測</p>
-                <p>• 再選擇是否此患者未來要加入訓練</p>
-                <p>• 患者感受在治療截止後才能填寫</p>
-                <p>• 需先測量 baseline 才能進行後續預測</p>
-                <p>• 點擊 <strong>Finish Prediction</strong> 才完成全部治療</p>
-            </div>
-        </div>
-    </div>
+<div class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;" @onclick="HideHelp">
+<div class="modal-content" style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);" @onclick:stopPropagation="true">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+<h3 style="margin: 0; color: #000;">使用說明</h3>
+<button @onclick="HideHelp" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">×</button>
+</div>
+<div style="line-height: 1.6; color: #555;">
+<p>• 首先點擊「搜尋COM埠」掃描可用的COM埠</p>
+<p>• 選擇正確的COM埠後點擊「連線」</p>
+<p>• 連線成功後點擊「開始傳輸」開始接收訊號</p>
+<p>• 訊號會即時顯示在CH1和CH2圖表上</p>
+<p>• 可調整Max/Min值來改變Y軸範圍</p>
+<p>• 點擊「停止傳輸」暫停接收，「中斷連線」關閉COM埠</p>
+</div>
+</div>
+</div>
 }
-
-@{
-    // 這段僅建立本地變數顯示用（未在畫面上使用 p/avatar 可保留或移除）
-    var p = (string.IsNullOrWhiteSpace(Id)
-                ? AppState.Patients?.FirstOrDefault()
-                : AppState.Patients?.FirstOrDefault(x => x.Id == Id))
-            ?? new Batc.Web.Models.Patient { Name = "James Wilson", Id = "PAT-2023-1296", Age = 35, Gender = "Male", BloodType = "A", Height = 178, Weight = 75, AvatarUrl = "images/病人_1.png" };
-    var avatar = string.IsNullOrWhiteSpace(p.AvatarUrl) ? "images/病人_1.png" : p.AvatarUrl;
-}
-
 <main class="wrap">
     <section class="grid page-stack">
         <h3>即時波形（CH1 / CH2）</h3>
+    <!-- 兩個示波框：直向堆疊 -->
+    <div class="signal-grid">
+        <div class="scope-card">
+            <div class="scope-title">CH1 (Cz)</div>
+            <div class="scope-row">
+                <lvc:CartesianChart Series="@seriesCh1" YAxes="@y1" Height="280" />
+                <div class="axis-panel">
+                    <div>Max</div><input type="number" @bind="y1Max" @bind:event="oninput" />
+                    <div>Min</div><input type="number" @bind="y1Min" @bind:event="oninput" />
+                </div>
+            </div>
+        </div>
 
-        <!-- 兩個示波框：直向堆疊 -->
+        <div class="scope-card">
+            <div class="scope-title">CH2 (Fz)</div>
+            <div class="scope-row">
+                <lvc:CartesianChart Series="@seriesCh2" YAxes="@y2" Height="280" />
+                <div class="axis-panel">
+                    <div>Max</div><input type="number" @bind="y2Max" @bind:event="oninput" />
+                    <div>Min</div><input type="number" @bind="y2Min" @bind:event="oninput" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (showSpectrum)
+    {
+        <h4 class="mt-4">頻譜分析</h4>
         <div class="signal-grid">
             <div class="scope-card">
-                <div class="scope-title">CH1</div>
-                <div class="scope-row">
-                    <lvc:CartesianChart Series="@seriesCh1" YAxes="@y1" Height="220" />
-                    <div class="axis-panel">
-                        <div>Max</div><input type="number" @bind="y1Max" @bind:event="oninput" />
-                        <div>Min</div><input type="number" @bind="y1Min" @bind:event="oninput" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="scope-card">
-                <div class="scope-title">CH2</div>
-                <div class="scope-row">
-                    <lvc:CartesianChart Series="@seriesCh2" YAxes="@y2" Height="220" />
-                    <div class="axis-panel">
-                        <div>Max</div><input type="number" @bind="y2Max" @bind:event="oninput" />
-                        <div>Min</div><input type="number" @bind="y2Min" @bind:event="oninput" />
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        @if (showSpectrum)
-        {
-            <h4 class="mt-4">（可選）頻譜</h4>
-            <div class="signal-grid">
+                <div class="scope-title">CH1 頻譜</div>
                 <lvc:CartesianChart Series="@seriesF1" Height="220" />
+            </div>
+            <div class="scope-card">
+                <div class="scope-title">CH2 頻譜</div>
                 <lvc:CartesianChart Series="@seriesF2" Height="220" />
             </div>
-        }
-
-        <!-- 工具列：在底部 -->
-        <div class="signal-toolbar">
-            <label>COM 連線：</label>
-
-            <select @bind="selectedPort" style="min-width:110px">
-                @if (ports.Count == 0)
-                {
-                    <option disabled>找不到任何埠</option>
-                }
-                else
-                {
-                    @foreach (var n in ports)
-                    {
-                        <option value="@n">@n</option>
-                    }
-                }
-            </select>
-
-            <button title="重新掃描" @onclick="ReloadPorts">🔄</button>
-            <button @onclick="Connect" disabled="@string.IsNullOrEmpty(selectedPort)">連線</button>
-            <button @onclick="Disconnect">中斷</button>
-
-            <span style="margin-left:12px">視窗寬度：</span>
-            <input type="number" @bind="Chart.MaxPoints" style="width:90px" />
-
-            <span class="com-status">COM 狀態：@_status</span>
-            <button class="demo-btn" @onclick="InjectDemo">測試資料</button>
         </div>
-    </section>
+    }
+
+    <!-- 工具列 -->
+    <div class="signal-toolbar">
+        <label>COM 連線：</label>
+
+        <button @onclick="ReloadPorts" title="搜尋COM埠" disabled="@_connecting">
+            🔍 搜尋COM埠
+        </button>
+
+        <select @bind="selectedPort" style="min-width:130px" disabled="@_connecting">
+            @if (ports.Count == 0)
+            {
+                <option disabled>找不到任何埠</option>
+            }
+            else
+            {
+                @foreach (var n in ports)
+                {
+                    <option value="@n">@n</option>
+                }
+            }
+        </select>
+
+        <button @onclick="Connect" disabled="@(string.IsNullOrEmpty(selectedPort) || _isConnected || _connecting)">
+            📡 連線
+        </button>
+        
+        <button @onclick="StartTransmission" disabled="@(!_isConnected || _isTransmitting)">
+            ▶️ 開始傳輸
+        </button>
+        
+        <button @onclick="StopTransmission" disabled="@(!_isTransmitting)">
+            ⏸️ 停止傳輸
+        </button>
+        
+        <button @onclick="Disconnect" disabled="@(!_isConnected)">
+            🔌 中斷連線
+        </button>
+
+        <span style="margin-left:12px">視窗寬度：</span>
+        <input type="number" @bind="Chart.MaxPoints" style="width:90px" />
+
+        <button @onclick="ToggleSpectrum" style="margin-left:12px">
+            @(showSpectrum ? "隱藏" : "顯示")頻譜
+        </button>
+
+        <span class="com-status" style="@GetStatusStyle()">
+            COM 狀態：@_status
+        </span>
+
+        <button class="demo-btn" @onclick="InjectDemo" disabled="@_isConnected">
+            測試資料
+        </button>
+    </div>
+
+    <!-- 統計資訊 -->
+    <div style="margin-top: 20px; padding: 10px; background: #f5f5f5; border-radius: 4px; font-size: 0.9em;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+            <div>📦 接收封包數：<strong>@_packetCount</strong></div>
+            <div>📊 波形區塊數：<strong>@_waveBlockCount</strong></div>
+            <div>🔢 FFT 計算次數：<strong>@_fftCount</strong></div>
+            <div>⏱️ 資料點數：<strong>@Chart.Ch1.Count</strong> / @Chart.MaxPoints</div>
+        </div>
+    </div>
+</section>
 </main>
+<style>
+    .signal-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin: 20px 0;
+    }
 
+    .scope-card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .scope-title {
+        font-weight: bold;
+        font-size: 1.1em;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .scope-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .axis-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 100px;
+    }
+
+    .axis-panel input {
+        padding: 4px 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 100%;
+    }
+
+    .signal-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .signal-toolbar button {
+        padding: 8px 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .signal-toolbar button:hover:not(:disabled) {
+        background: #e9ecef;
+        border-color: #999;
+    }
+
+    .signal-toolbar button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .com-status {
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-weight: bold;
+        margin-left: auto;
+    }
+
+    .demo-btn {
+        background: #17a2b8 !important;
+        color: white !important;
+        border: none !important;
+    }
+
+    .demo-btn:hover:not(:disabled) {
+        background: #138496 !important;
+    }
+</style>
 @code {
-    // -------- 路由 --------
-    [Parameter] public string? Id { get; set; }
+[Parameter] public string? Id { get; set; }
+// -------- LiveCharts --------
+private bool showSpectrum = false;
 
-    // -------- LiveCharts（2 個通道 + 可選頻譜）--------
-    private bool showSpectrum = false;
+private ISeries[] seriesCh1 = Array.Empty<ISeries>();
+private ISeries[] seriesCh2 = Array.Empty<ISeries>();
+private ISeries[] seriesF1 = Array.Empty<ISeries>();
+private ISeries[] seriesF2 = Array.Empty<ISeries>();
 
-    private ISeries[] seriesCh1 = Array.Empty<ISeries>();
-    private ISeries[] seriesCh2 = Array.Empty<ISeries>();
-    private ISeries[] seriesF1 = Array.Empty<ISeries>();
-    private ISeries[] seriesF2 = Array.Empty<ISeries>();
+private Axis axis1 = new() { MinLimit = -100, MaxLimit = 100 };
+private Axis axis2 = new() { MinLimit = -100, MaxLimit = 100 };
+private Axis[] y1 => new[] { axis1 };
+private Axis[] y2 => new[] { axis2 };
+private double y1Min { get => axis1.MinLimit ?? -100; set => axis1.MinLimit = value; }
+private double y1Max { get => axis1.MaxLimit ?? 100; set => axis1.MaxLimit = value; }
+private double y2Min { get => axis2.MinLimit ?? -100; set => axis2.MinLimit = value; }
+private double y2Max { get => axis2.MaxLimit ?? 100; set => axis2.MaxLimit = value; }
 
-    private Axis axis1 = new() { MinLimit = -100, MaxLimit = 100 };
-    private Axis axis2 = new() { MinLimit = -100, MaxLimit = 100 };
-    private Axis[] y1 => new[] { axis1 };
-    private Axis[] y2 => new[] { axis2 };
-    private double y1Min { get => axis1.MinLimit ?? -100; set => axis1.MinLimit = value; }
-    private double y1Max { get => axis1.MaxLimit ?? 100; set => axis1.MaxLimit = value; }
-    private double y2Min { get => axis2.MinLimit ?? -100; set => axis2.MinLimit = value; }
-    private double y2Max { get => axis2.MaxLimit ?? 100; set => axis2.MaxLimit = value; }
+// 訂閱 SignalService 用
+private Action<double[], double[]>? _onWave;
+private Action<double[], double[]>? _onSpec;
 
-    // 訂閱 SignalService 用
-    private Action<double[], double[]>? _onWave;
-    private Action<double[], double[]>? _onSpec;
+// -------- COM 掃描/連線 --------
+private List<string> ports = new();
+private string? selectedPort;
+private string _status = "尚未連線";
+private bool _connecting = false;
+private bool _isConnected = false;
+private bool _isTransmitting = false;
 
-    // -------- COM 掃描/連線 --------
-    private List<string> ports = new();
-    private string? selectedPort;
+// -------- 統計資訊 --------
+private int _packetCount = 0;
+private int _waveBlockCount = 0;
+private int _fftCount = 0;
 
-    private void ReloadPorts()
+// -------- COM 埠掃描 --------
+private void ReloadPorts()
+{
+    try
     {
-        try
+        ports = SerialPort.GetPortNames()
+                          .OrderBy(n => n, StringComparer.OrdinalIgnoreCase)
+                          .ToList();
+        
+        if (ports.Count > 0)
         {
-            ports = SerialPort.GetPortNames()
-                              .OrderBy(n => n, StringComparer.OrdinalIgnoreCase)
-                              .ToList();
             if (string.IsNullOrEmpty(selectedPort) || !ports.Contains(selectedPort))
                 selectedPort = ports.FirstOrDefault();
+            
+            _status = $"找到 {ports.Count} 個COM埠";
         }
-        catch
+        else
         {
-            ports = new();
             selectedPort = null;
+            _status = "找不到任何COM埠";
         }
     }
-
-    private string _status = "尚未連線";
-    private bool _connecting;
-
-    // 在 Connect 方法中修改 baud rate
-    private async Task Connect()
+    catch (Exception ex)
     {
-        // ===== 加入這些 Debug 輸出 =====
-        Console.WriteLine("***** Connect 方法被呼叫 *****");
-        System.Diagnostics.Debug.WriteLine("***** Connect 方法被呼叫 *****");
-        
-        if (_connecting)
+        ports = new();
+        selectedPort = null;
+        _status = $"掃描失敗：{ex.Message}";
+    }
+}
+
+// -------- 連線 --------
+private async Task Connect()
+{
+    if (_connecting || _isConnected) return;
+
+    try
+    {
+        _connecting = true;
+        _status = "連線中…";
+        StateHasChanged();
+
+        if (string.IsNullOrEmpty(selectedPort))
         {
-            Console.WriteLine("已經在連線中，略過");
+            ReloadPorts();
+        }
+
+        if (string.IsNullOrEmpty(selectedPort))
+        {
+            _status = "找不到任何 COM 埠";
             return;
         }
+
+        // 連線但不啟動傳輸
+        await Signal.ConnectAsync(selectedPort!, 460800);
         
-        try
-        {
-            _connecting = true;
-            _status = "連線中…";
-            
-            Console.WriteLine($"選擇的 COM 埠: {selectedPort}");
-            StateHasChanged();
-
-            if (string.IsNullOrEmpty(selectedPort))
-            {
-                Console.WriteLine("COM 埠為空，重新掃描");
-                ReloadPorts();
-            }
-            
-            if (string.IsNullOrEmpty(selectedPort))
-            {
-                _status = "找不到任何 COM 埠";
-                Console.WriteLine(_status);
-                return;
-            }
-
-            Console.WriteLine($"準備呼叫 Signal.StartAsync({selectedPort}, 460800)");
-            await Signal.StartAsync(selectedPort!, 460800);
-            
-            _status = $"已連線：{selectedPort}";
-            Console.WriteLine(_status);
-        }
-        catch (Exception ex)
-        {
-            _status = $"連線失敗：{ex.Message}";
-            Console.WriteLine($"例外: {ex}");
-        }
-        finally
-        {
-            _connecting = false;
-            Console.WriteLine("Connect 方法結束");
-            StateHasChanged();
-        }
+        _isConnected = true;
+        _status = $"已連線：{selectedPort} (請按「開始傳輸」)";
     }
-
-    private void Disconnect()
+    catch (Exception ex)
     {
-        try
-        {
-            Signal.Stop();
-            _status = "已中斷";
-        }
-        catch (Exception ex)
-        {
-            _status = $"中斷時發生錯誤：{ex.Message}";
-        }
+        _status = $"連線失敗：{ex.Message}";
+        _isConnected = false;
     }
-
-    // -------- 生命週期 --------
-    protected override void OnInitialized()
+    finally
     {
-        // 綁定 LiveCharts 的資料來源
-        seriesCh1 = new ISeries[] { new LineSeries<double> { Values = Chart.Ch1, GeometrySize = 0 } };
-        seriesCh2 = new ISeries[] { new LineSeries<double> { Values = Chart.Ch2, GeometrySize = 0 } };
-        seriesF1 = new ISeries[] { new LineSeries<double> { Values = Chart.Fft1, GeometrySize = 0 } };
-        seriesF2 = new ISeries[] { new LineSeries<double> { Values = Chart.Fft2, GeometrySize = 0 } };
-
-        // 訂閱資料事件
-        _onWave = (a, b) => { Chart.AppendWave(a, b); _ = InvokeAsync(StateHasChanged); };
-        _onSpec = (f1, f2) => { if (showSpectrum) { Chart.SetSpectrum(f1, f2); _ = InvokeAsync(StateHasChanged); } };
-        Signal.OnWaveBlock += _onWave;
-        Signal.OnSpectrum += _onSpec;
-
-        // 掃一次 COM
-        ReloadPorts();
+        _connecting = false;
+        StateHasChanged();
     }
+}
 
-    public void Dispose()
+// -------- 開始傳輸 --------
+private async Task StartTransmission()
+{
+    if (!_isConnected || _isTransmitting) return;
+
+    try
     {
-        if (_onWave is not null) Signal.OnWaveBlock -= _onWave;
-        if (_onSpec is not null) Signal.OnSpectrum -= _onSpec;
+        _status = "開始傳輸資料…";
+        StateHasChanged();
+
+        await Signal.StartTransmissionAsync();
+        
+        _isTransmitting = true;
+        _status = $"傳輸中：{selectedPort}";
     }
-
-    // -------- Header/Modal 動作 --------
-    private bool showHelpModal = false;
-    private void ShowHelp() => showHelpModal = true;
-    private void HideHelp() => showHelpModal = false;
-    private void Logout() => Nav.NavigateTo("/");
-    private void GoBack() => Nav.NavigateTo($"/confirm/{Uri.EscapeDataString(Id ?? "")}");
-
-    // -------- 測試資料（驗證圖表/狀態）--------
-    private async Task InjectDemo()
+    catch (Exception ex)
     {
-        const int N = 512;
-        var ch1 = new double[N];
-        var ch2 = new double[N];
-        for (int i = 0; i < N; i++)
-        {
-            ch1[i] = 50 * Math.Sin(2 * Math.PI * i / 48.0);
-            ch2[i] = 50 * Math.Cos(2 * Math.PI * i / 60.0);
-        }
-
-        Chart.AppendWave(ch1, ch2);
-        await InvokeAsync(StateHasChanged);
-        _status = "已注入測試資料（若看得到線，圖表OK，請檢查 COM/Service）";
+        _status = $"啟動傳輸失敗：{ex.Message}";
     }
+    finally
+    {
+        StateHasChanged();
+    }
+}
+
+// -------- 停止傳輸 --------
+private void StopTransmission()
+{
+    try
+    {
+        Signal.StopTransmission();
+        _isTransmitting = false;
+        _status = $"已暫停傳輸：{selectedPort}";
+    }
+    catch (Exception ex)
+    {
+        _status = $"停止傳輸失敗：{ex.Message}";
+    }
+}
+
+// -------- 中斷連線 --------
+private void Disconnect()
+{
+    try
+    {
+        Signal.Stop();
+        _isConnected = false;
+        _isTransmitting = false;
+        _status = "已中斷連線";
+    }
+    catch (Exception ex)
+    {
+        _status = $"中斷時發生錯誤：{ex.Message}";
+    }
+}
+
+// -------- 狀態樣式 --------
+private string GetStatusStyle()
+{
+    if (_isTransmitting)
+        return "background: #28a745; color: white;";
+    else if (_isConnected)
+        return "background: #ffc107; color: black;";
+    else if (_status.Contains("失敗") || _status.Contains("錯誤"))
+        return "background: #dc3545; color: white;";
+    else
+        return "background: #6c757d; color: white;";
+}
+
+// -------- 切換頻譜 --------
+private void ToggleSpectrum()
+{
+    showSpectrum = !showSpectrum;
+}
+
+// -------- 生命週期 --------
+protected override void OnInitialized()
+{
+    // 綁定 LiveCharts 的資料來源
+    seriesCh1 = new ISeries[] { new LineSeries<double> { Values = Chart.Ch1, GeometrySize = 0, LineSmoothness = 0 } };
+    seriesCh2 = new ISeries[] { new LineSeries<double> { Values = Chart.Ch2, GeometrySize = 0, LineSmoothness = 0 } };
+    seriesF1 = new ISeries[] { new LineSeries<double> { Values = Chart.Fft1, GeometrySize = 0 } };
+    seriesF2 = new ISeries[] { new LineSeries<double> { Values = Chart.Fft2, GeometrySize = 0 } };
+
+    // 訂閱資料事件
+    _onWave = (a, b) => 
+    { 
+        Chart.AppendWave(a, b);
+        _waveBlockCount++;
+        _ = InvokeAsync(StateHasChanged); 
+    };
+    
+    _onSpec = (f1, f2) => 
+    { 
+        if (showSpectrum) 
+        { 
+            Chart.SetSpectrum(f1, f2);
+            _fftCount++;
+            _ = InvokeAsync(StateHasChanged); 
+        } 
+    };
+
+    Signal.OnWaveBlock += _onWave;
+    Signal.OnSpectrum += _onSpec;
+    Signal.OnPacketReceived += () => { _packetCount++; };
+
+    // 初始掃描 COM
+    ReloadPorts();
+}
+
+public void Dispose()
+{
+    if (_onWave is not null) Signal.OnWaveBlock -= _onWave;
+    if (_onSpec is not null) Signal.OnSpectrum -= _onSpec;
+}
+
+// -------- Header/Modal 動作 --------
+private bool showHelpModal = false;
+private void ShowHelp() => showHelpModal = true;
+private void HideHelp() => showHelpModal = false;
+private void Logout() => Nav.NavigateTo("/");
+private void GoBack() => Nav.NavigateTo($"/confirm/{Uri.EscapeDataString(Id ?? "")}");
+
+// -------- 測試資料 --------
+private async Task InjectDemo()
+{
+    const int N = 512;
+    var ch1 = new double[N];
+    var ch2 = new double[N];
+    for (int i = 0; i < N; i++)
+    {
+        ch1[i] = 50 * Math.Sin(2 * Math.PI * i / 48.0);
+        ch2[i] = 50 * Math.Cos(2 * Math.PI * i / 60.0);
+    }
+
+    Chart.AppendWave(ch1, ch2);
+    _waveBlockCount++;
+    await InvokeAsync(StateHasChanged);
+    _status = "已注入測試資料";
+}
 }

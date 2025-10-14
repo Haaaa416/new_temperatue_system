@@ -5,45 +5,43 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using MathNet.Numerics.IntegralTransforms;
-
 namespace Batc.Web.Services
 {
     public class SignalService
     {
-        // ===== 封包參數（與原始 C# 一致）=====
-        private const int PackageSize = 232;      // 每一封包大小
-        private const int Channel = 4;             // 幾個 channel
-        private const int Datapoint = 13;          // 每一封包點數
-        private const int PointSize = 4;           // 每一點 bytes
-        private const int StartBytesSize = 20;     // 檔頭大小
-        private const int EndBytesSize = 4;        // 檔尾大小
-        private const int SampleRate = 250;        // 每秒點數
-
+        // ===== 封包參數 =====
+        private const int PackageSize = 232;
+        private const int Channel = 4;
+        private const int Datapoint = 13;
+        private const int PointSize = 4;
+        private const int StartBytesSize = 20;
+        private const int EndBytesSize = 4;
+        private const int SampleRate = 250;
         // ===== 訊號處理參數 =====
-        private const int NewSignalSize = 130;     // 每次新加入計算點數
-        private const int SignalFilterSize = 520;  // NewSignalSize * 4
-        private const int MoveSignalSize = 390;    // SignalFilterSize - NewSignalSize
+        private const int NewSignalSize = 130;
+        private const int SignalFilterSize = 520;
+        private const int MoveSignalSize = 390;
 
         // ===== 事件 =====
         public event Action<double[], double[]>? OnWaveBlock;
         public event Action<double[], double[]>? OnSpectrum;
+        public event Action? OnPacketReceived;
 
         // ===== 序列埠 =====
         private SerialPort? _port;
         private CancellationTokenSource? _cts;
         private Task? _readerTask;
+        private bool _isTransmitting = false;
 
         // ===== 緩衝區 =====
         private readonly byte[] _readBuffer = new byte[PackageSize];
         private readonly byte[] _bufferMiss = new byte[PackageSize];
 
-        // 訊號暫存
         private readonly float[] _tempCh1 = new float[NewSignalSize];
         private readonly float[] _tempCh2 = new float[NewSignalSize];
         private readonly float[] _tempCh3 = new float[NewSignalSize];
         private readonly float[] _tempCh4 = new float[NewSignalSize];
 
-        // 濾波用
         private readonly float[] _dataCh1 = new float[SignalFilterSize];
         private readonly float[] _dataCh2 = new float[SignalFilterSize];
         private readonly float[] _dataCh3 = new float[SignalFilterSize];
@@ -52,7 +50,6 @@ namespace Batc.Web.Services
         private readonly float[] _drawCh1 = new float[NewSignalSize];
         private readonly float[] _drawCh2 = new float[NewSignalSize];
 
-        // FFT 用
         private readonly float[] _nftBufferCh1 = new float[NewSignalSize * 3];
         private readonly float[] _nftBufferCh2 = new float[NewSignalSize * 3];
         private readonly float[] _nftCalCh1 = new float[250];
@@ -62,35 +59,21 @@ namespace Batc.Web.Services
         private int _datapointCount = 0;
         private int _nftPointCount = 0;
 
-        // 濾波器（使用您提供的 SportIirFilter）
         private readonly SportIirFilter _filter = new(true, true, true);
 
-        // ===== Debug 計數器 =====
-        private int _packetCount = 0;
-        private int _waveBlockCount = 0;
-        private int _fftCount = 0;
-
         public bool IsRunning => _cts is not null && !_cts.IsCancellationRequested;
+        public bool IsConnected => _port?.IsOpen == true;
 
-        // ===== 啟動 =====
-        public async Task StartAsync(string portName, int baud = 460800)
+        // ===== 連線（但不啟動傳輸）=====
+        public async Task ConnectAsync(string portName, int baud = 460800)
         {
-            // 強制輸出到標準輸出
-            System.Diagnostics.Debug.WriteLine($"========== 開始連線 ==========");
-            System.Diagnostics.Debug.WriteLine($"COM 埠: {portName}");
-            System.Diagnostics.Debug.WriteLine($"Baud Rate: {baud}");
-
-            Console.WriteLine($"========== 開始連線 ==========");
-            Console.WriteLine($"COM 埠: {portName}");
-            Console.WriteLine($"Baud Rate: {baud}");
+            Console.WriteLine($"========== 連線 COM 埠 ==========");
+            Console.WriteLine($"COM 埠: {portName}, Baud: {baud}");
 
             Stop();
 
-            _cts = new CancellationTokenSource();
-
             try
             {
-                Console.WriteLine("正在開啟序列埠...");
                 _port = new SerialPort(portName, baud, Parity.None, 8, StopBits.One)
                 {
                     RtsEnable = true,
@@ -99,37 +82,53 @@ namespace Batc.Web.Services
                 };
 
                 _port.Open();
-                Console.WriteLine("✓ 序列埠已開啟");
-
-                // 發送開始命令
-                SendStartCommand();
-
-                // 背景讀取
-                _readerTask = Task.Run(() => ReadLoop(_cts.Token), _cts.Token);
-                Console.WriteLine("✓ 讀取執行緒已啟動");
+                Console.WriteLine("✓ COM 埠已開啟");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"✗ 開啟 COM 埠失敗: {ex.Message}");
-                Console.WriteLine($"詳細錯誤: {ex}");
-                Console.WriteLine("切換到 Demo 模式...");
-                _readerTask = Task.Run(() => DemoLoop(_cts.Token), _cts.Token);
+                throw;
             }
 
             await Task.CompletedTask;
         }
 
-        // ===== 停止 =====
-        public void Stop()
+        // ===== 開始傳輸 =====
+        public async Task StartTransmissionAsync()
         {
-            Console.WriteLine("========== 停止連線 ==========");
+            if (_port?.IsOpen != true)
+                throw new InvalidOperationException("COM 埠未開啟");
+
+            if (_isTransmitting)
+                return;
+
+            Console.WriteLine("========== 開始傳輸 ==========");
+
+            _cts = new CancellationTokenSource();
+            _isTransmitting = true;
+
+            // 發送開始命令
+            SendStartCommand();
+
+            // 啟動讀取執行緒
+            _readerTask = Task.Run(() => ReadLoop(_cts.Token), _cts.Token);
+            Console.WriteLine("✓ 讀取執行緒已啟動");
+
+            await Task.CompletedTask;
+        }
+
+        // ===== 停止傳輸 =====
+        public void StopTransmission()
+        {
+            Console.WriteLine("========== 停止傳輸 ==========");
+
+            _isTransmitting = false;
 
             try
             {
                 if (_port?.IsOpen == true)
                 {
                     SendStopCommand();
-                    Thread.Sleep(100);
                 }
             }
             catch (Exception ex)
@@ -138,10 +137,6 @@ namespace Batc.Web.Services
             }
 
             try { _cts?.Cancel(); } catch { }
-            try { _port?.Close(); } catch { }
-
-            _port?.Dispose();
-            _port = null;
             _cts = null;
             _readerTask = null;
 
@@ -150,15 +145,20 @@ namespace Batc.Web.Services
             _count = 0;
             _datapointCount = 0;
             _nftPointCount = 0;
+        }
 
-            Console.WriteLine($"統計資料:");
-            Console.WriteLine($"  - 接收封包數: {_packetCount}");
-            Console.WriteLine($"  - 發送波形區塊: {_waveBlockCount}");
-            Console.WriteLine($"  - 計算 FFT 次數: {_fftCount}");
+        // ===== 完全停止（關閉 COM 埠）=====
+        public void Stop()
+        {
+            Console.WriteLine("========== 完全停止 ==========");
 
-            _packetCount = 0;
-            _waveBlockCount = 0;
-            _fftCount = 0;
+            StopTransmission();
+
+            try { _port?.Close(); } catch { }
+            _port?.Dispose();
+            _port = null;
+
+            Console.WriteLine("✓ COM 埠已關閉");
         }
 
         // ===== 發送開始命令 =====
@@ -171,7 +171,6 @@ namespace Batc.Web.Services
                 Console.WriteLine("正在清空輸入緩衝區...");
                 _port.DiscardInBuffer();
 
-                // 發送開始命令（與原始 C# 一致）
                 var datestart = new byte[10];
                 datestart[0] = 0x55;
                 datestart[1] = 0x03;
@@ -185,8 +184,7 @@ namespace Batc.Web.Services
                 datestart[9] = 0xAA;
 
                 _port.Write(datestart, 0, 10);
-                Console.WriteLine("✓ 已發送開始命令:");
-                Console.WriteLine($"   {BitConverter.ToString(datestart)}");
+                Console.WriteLine("✓ 已發送開始命令");
             }
             catch (Exception ex)
             {
@@ -212,13 +210,14 @@ namespace Batc.Web.Services
             }
         }
 
-        // ===== 讀取實體資料 =====
+        // ===== 讀取迴圈 =====
         private void ReadLoop(CancellationToken ct)
         {
             Console.WriteLine("---------- 讀取迴圈開始 ----------");
             var lastReportTime = DateTime.Now;
+            var packetCount = 0;
 
-            while (!ct.IsCancellationRequested)
+            while (!ct.IsCancellationRequested && _isTransmitting)
             {
                 try
                 {
@@ -228,45 +227,21 @@ namespace Batc.Web.Services
                         break;
                     }
 
-                    // 每秒報告一次狀態
+                    // 每秒報告一次
                     if ((DateTime.Now - lastReportTime).TotalSeconds >= 1)
                     {
-                        Console.WriteLine($"[狀態] 緩衝區位元組數: {_port.BytesToRead}, 已接收封包: {_packetCount}");
+                        Console.WriteLine($"[狀態] 緩衝區: {_port.BytesToRead} bytes, 封包: {packetCount}");
                         lastReportTime = DateTime.Now;
                     }
 
-                    // 檢查是否有足夠資料
                     if (_port.BytesToRead >= PackageSize)
                     {
                         _port.Read(_readBuffer, 0, PackageSize);
-                        _packetCount++;
+                        packetCount++;
+                        OnPacketReceived?.Invoke();
 
-                        // 每 10 個封包輸出一次原始資料
-                        if (_packetCount % 10 == 1)
-                        {
-                            Console.WriteLine($"[封包 #{_packetCount}] 前 20 bytes:");
-                            Console.WriteLine($"   {BitConverter.ToString(_readBuffer, 0, Math.Min(20, PackageSize))}");
-                        }
-
-                        // 轉換資料
                         var voltage = DataConvert232(_readBuffer);
 
-                        // 顯示轉換後的電壓值（前幾個封包）
-                        if (_packetCount <= 3)
-                        {
-                            Console.WriteLine($"[封包 #{_packetCount}] 電壓值 (前3點):");
-                            for (int ch = 0; ch < 2; ch++)
-                            {
-                                Console.Write($"   CH{ch + 1}: ");
-                                for (int pt = 0; pt < Math.Min(3, Datapoint); pt++)
-                                {
-                                    Console.Write($"{voltage[ch, pt] * 1000000:F2}μV ");
-                                }
-                                Console.WriteLine();
-                            }
-                        }
-
-                        // 累積資料
                         for (int i = 0; i < Datapoint; i++)
                         {
                             _tempCh1[_count] = voltage[0, i];
@@ -277,7 +252,6 @@ namespace Batc.Web.Services
                             _datapointCount++;
                         }
 
-                        // 處理訊號
                         if (_count >= NewSignalSize)
                         {
                             ProcessSignal();
@@ -288,29 +262,25 @@ namespace Batc.Web.Services
                         Thread.Sleep(1);
                     }
                 }
-                catch (TimeoutException)
-                {
-                    // 忽略 timeout
-                }
+                catch (TimeoutException) { }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"✗ 讀取資料錯誤: {ex.Message}");
-                    Console.WriteLine($"   詳細: {ex.StackTrace}");
+                    Console.WriteLine($"✗ 讀取錯誤: {ex.Message}");
                     Thread.Sleep(10);
                 }
             }
 
-            Console.WriteLine("---------- 讀取迴圈結束 ----------");
+            Console.WriteLine($"---------- 讀取迴圈結束 (共 {packetCount} 封包) ----------");
         }
 
-        // ===== 處理訊號（濾波 + FFT）=====
+        // ===== 處理訊號 =====
         private void ProcessSignal()
         {
             _count -= NewSignalSize;
 
             if (_datapointCount > SignalFilterSize)
             {
-                // 移動資料並濾波（CH1）
+                // CH1 濾波
                 Buffer.BlockCopy(_dataCh1, 4 * NewSignalSize, _dataCh1, 0, 4 * MoveSignalSize);
                 Buffer.BlockCopy(_tempCh1, 0, _dataCh1, 4 * MoveSignalSize, 4 * NewSignalSize);
 
@@ -319,7 +289,7 @@ namespace Batc.Web.Services
                 _filter.ProcessInPlace(ch1Double);
                 for (int i = 0; i < NewSignalSize; i++) _drawCh1[i] = (float)ch1Double[MoveSignalSize + i];
 
-                // 移動資料並濾波（CH2）
+                // CH2 濾波
                 Buffer.BlockCopy(_dataCh2, 4 * NewSignalSize, _dataCh2, 0, 4 * MoveSignalSize);
                 Buffer.BlockCopy(_tempCh2, 0, _dataCh2, 4 * MoveSignalSize, 4 * NewSignalSize);
 
@@ -328,7 +298,7 @@ namespace Batc.Web.Services
                 _filter.ProcessInPlace(ch2Double);
                 for (int i = 0; i < NewSignalSize; i++) _drawCh2[i] = (float)ch2Double[MoveSignalSize + i];
 
-                // CH3, CH4 同樣處理
+                // CH3, CH4
                 Buffer.BlockCopy(_dataCh3, 4 * NewSignalSize, _dataCh3, 0, 4 * MoveSignalSize);
                 Buffer.BlockCopy(_tempCh3, 0, _dataCh3, 4 * MoveSignalSize, 4 * NewSignalSize);
 
@@ -341,7 +311,7 @@ namespace Batc.Web.Services
 
                 _nftPointCount += NewSignalSize;
 
-                // 發送波形資料（轉成 μV）
+                // 發送波形資料（轉 μV）
                 var waveCh1 = new double[NewSignalSize];
                 var waveCh2 = new double[NewSignalSize];
                 for (int i = 0; i < NewSignalSize; i++)
@@ -350,15 +320,9 @@ namespace Batc.Web.Services
                     waveCh2[i] = _drawCh2[i] * 1000000;
                 }
 
-                _waveBlockCount++;
-                if (_waveBlockCount <= 3 || _waveBlockCount % 10 == 0)
-                {
-                    Console.WriteLine($"[波形 #{_waveBlockCount}] 發送 {NewSignalSize} 點, 範圍: CH1=[{waveCh1.Min():F2}, {waveCh1.Max():F2}]μV, CH2=[{waveCh2.Min():F2}, {waveCh2.Max():F2}]μV");
-                }
-
                 OnWaveBlock?.Invoke(waveCh1, waveCh2);
 
-                // 每 250 點計算一次 FFT
+                // 每 250 點計算 FFT
                 if (_nftPointCount >= 250)
                 {
                     Buffer.BlockCopy(_nftBufferCh1, 0, _nftCalCh1, 0, 4 * 250);
@@ -367,15 +331,8 @@ namespace Batc.Web.Services
                     var fft1 = ComputeSTFT(_nftCalCh1);
                     var fft2 = ComputeSTFT(_nftCalCh2);
 
-                    _fftCount++;
-                    if (_fftCount <= 3 || _fftCount % 5 == 0)
-                    {
-                        Console.WriteLine($"[FFT #{_fftCount}] 頻譜計算完成, 長度: {fft1.Length}");
-                    }
-
                     OnSpectrum?.Invoke(fft1, fft2);
 
-                    // 移動 Buffer
                     Buffer.BlockCopy(_nftBufferCh1, 4 * 250, _nftBufferCh1, 0, 4 * (_nftPointCount - 250));
                     Buffer.BlockCopy(_nftBufferCh2, 4 * 250, _nftBufferCh2, 0, 4 * (_nftPointCount - 250));
 
@@ -384,38 +341,29 @@ namespace Batc.Web.Services
             }
             else
             {
-                // 初始填充
                 int temp = _datapointCount - NewSignalSize;
                 Buffer.BlockCopy(_tempCh1, 0, _dataCh1, 4 * temp, 4 * NewSignalSize);
                 Buffer.BlockCopy(_tempCh2, 0, _dataCh2, 4 * temp, 4 * NewSignalSize);
                 Buffer.BlockCopy(_tempCh3, 0, _dataCh3, 4 * temp, 4 * NewSignalSize);
                 Buffer.BlockCopy(_tempCh4, 0, _dataCh4, 4 * temp, 4 * NewSignalSize);
-
-                if (_datapointCount == SignalFilterSize)
-                {
-                    Console.WriteLine($"✓ 初始緩衝區已填滿 ({SignalFilterSize} 點)，開始濾波處理");
-                }
             }
         }
 
-        // ===== 資料轉換（232 bytes）=====
+        // ===== 資料轉換 =====
         private float[,] DataConvert232(byte[] bufferdata)
         {
             var outsignal = new float[Channel, Datapoint];
             var packData = new byte[PackageSize];
-            bool foundPacket = false;
 
             for (int i = 0; i < bufferdata.Length; i++)
             {
                 if (i + PackageSize - EndBytesSize + 1 >= bufferdata.Length) break;
 
-                // 檢查封包頭尾標記
                 if (bufferdata[i] == 173 &&
                     bufferdata[i + 1] == 222 &&
                     bufferdata[i + PackageSize - EndBytesSize] == 239 &&
                     bufferdata[i + PackageSize - EndBytesSize + 1] == 190)
                 {
-                    foundPacket = true;
                     Buffer.BlockCopy(bufferdata, i, packData, 0, PackageSize);
 
                     if (i < PackageSize)
@@ -440,11 +388,6 @@ namespace Batc.Web.Services
                     Buffer.BlockCopy(bufferdata, i + 1, _bufferMiss, 0, bufferdata.Length - i - 1);
                     break;
                 }
-            }
-
-            if (!foundPacket && _packetCount <= 5)
-            {
-                Console.WriteLine($"⚠ 封包 #{_packetCount} 找不到標記 (0xAD 0xDE ... 0xEF 0xBE)");
             }
 
             return outsignal;
@@ -481,7 +424,7 @@ namespace Batc.Web.Services
             return outsignal;
         }
 
-        // ===== FFT（STFT）=====
+        // ===== FFT =====
         public static double[] ComputeSTFT(float[] data, int windowSize = 250, int hopSize = 125, int nfft = 256)
         {
             if (data.Length < windowSize)
@@ -519,38 +462,6 @@ namespace Batc.Web.Services
                 averageSpectrum[i] /= numFrames;
 
             return averageSpectrum;
-        }
-
-        // ===== Demo 模式 =====
-        private void DemoLoop(CancellationToken ct)
-        {
-            Console.WriteLine("========== Demo 模式啟動 ==========");
-            var t = 0;
-            const int BlockSize = 64;
-            var demoCount = 0;
-
-            while (!ct.IsCancellationRequested)
-            {
-                var ch1 = new double[BlockSize];
-                var ch2 = new double[BlockSize];
-
-                for (int i = 0; i < BlockSize; i++, t++)
-                {
-                    ch1[i] = 50 * Math.Sin(2 * Math.PI * t / 48.0);
-                    ch2[i] = 50 * Math.Cos(2 * Math.PI * t / 60.0);
-                }
-
-                demoCount++;
-                if (demoCount <= 3 || demoCount % 20 == 0)
-                {
-                    Console.WriteLine($"[Demo #{demoCount}] 發送測試資料: {BlockSize} 點");
-                }
-
-                OnWaveBlock?.Invoke(ch1, ch2);
-                Thread.Sleep(25);
-            }
-
-            Console.WriteLine("========== Demo 模式結束 ==========");
         }
     }
 }

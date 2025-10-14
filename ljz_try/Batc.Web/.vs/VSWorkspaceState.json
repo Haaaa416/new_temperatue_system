@@ -3,12 +3,12 @@
     "",
     "\\bin",
     "\\bin\\Debug",
-    "\\bin\\Release\\net9.0",
     "\\Components",
+    "\\Components\\Pages",
     "\\obj",
     "\\Properties",
     "\\Services"
   ],
-  "SelectedNode": "\\Batc.Web.csproj",
+  "SelectedNode": "\\Services\\SignalService.cs",
   "PreviewInSolutionExplorer": false
 }
